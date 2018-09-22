@@ -100,7 +100,7 @@
 
     svg.on("mousemove", function() {
 
-        timeFormater = d3.timeFormat("%Y/%m/%d");
+        timeFormater = d3.timeFormat("%Y/%m/%d %A");
 
         actualXPos = d3.event.pageX;
         outputText = "Fecha : " + timeFormater(x.invert(d3.event.pageX));
