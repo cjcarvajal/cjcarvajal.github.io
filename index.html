@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Violencia Intrafamiliar 2018</title>
+</head>
+
+<body>
+    <style>
+    .paragraph {
+        margin-left: 50px;
+        margin-right: 50px;
+        font-size: 18px;
+    }
+
+    .center_text {
+        text-align: center;
+    }
+
+    .line {
+        fill: none;
+        stroke-width: 1.5px;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .legend_container {
+        margin-bottom: 20px;
+        margin-left: 50px;
+    }
+    </style>
+    <h1 class="center_text">Violencia Intrafamiliar</h1>
+    <h2 class="center_text">¿Que ocurrió el 21 de Abril?</h2>
+    <div class="paragraph">
+        <p>Producto de la <a href="https://beta.observablehq.com/@cjcarvajal/tarea-2-visualizacion-sobre-datos-abiertos">visualización anterior</a>, se pudo evidenciar que ciertos departamentos del país presentaban un alto indice de incidentes de violencia intrafamiliar, sobrepasando a todos los del pais, dichos departamentos son:</p>
+        <ul>
+            <li><b>Cundinamarca:</b> 17247</li>
+            <li><b>Antioquia:</b> 5258</li>
+            <li><b>Valle:</b> 3278</li>
+            <li><b>Santander:</b> 2354</li>
+        </ul>
+        <p>Dada el alto número en estos departamentos, fueron seleccionados para hacer parte de un análisis de tendencia a lo largo del tiempo.</p>
+    </div>
+    <div class="container">
+        <svg id='principal' width="960" height="500"></svg>
+        <svg id='legend' class="legend_container" width="200" height="80"></svg>
+    </div>
+    <hr>
+    <div class="paragraph">
+        <h2>WHY - WHAT - HOW</h2>
+        <h3>Tarea Principal</h3>
+        <p>Identificar la tendencia (creciente, decreciente o constante) de los incidentes de violencia intrafamiliar por departamento.</p>
+        <h3>Tarea Secundaria</h3>
+        <p>Identificar los días en que los departamentos han presentado tanto valores elevados de incidentes como mínimos.</p>
+        <h3>Abstracción de Datos</h3>
+        <ul>
+            <li><b>Departamento:</b> Categorical</li>
+            <li><b>Fecha:</b> Ordered, Quantitative, Sequential</li>
+            <li><b>incidentesDepartamentoDia:</b> Ordered, Quantitative, Sequential</li>
+        </ul>
+        <h3>Marcas y Canales</h3>
+        <p>La marca usada es la <b>linea</b>, los canales dependiendo del atributo son:</p>
+        <ul>
+            <li><b>Departamento:</b> Color hue</li>
+            <li><b>Fecha:</b> Position on common scale</li>
+            <li><b>incidentesDepartamentoDia:</b> Position on common scale</li>
+        </ul>
+    </div>
+    <hr>
+    <div class="paragraph">
+        <h2>Insights</h2>
+        <p>Cundinamarca presenta picos de violencia intrafamiliar los días sabados: 27 de enero, 3 de febrero, 17 de marzo, 28 de abril entre otros.</p>
+        <p>El 21 de abril se presenta el pico más alto para Cundinamarca, en el mismo dia los demas departamentos muestra un pico también. Los meses de abril, mayo y junio, se muestran como críticos para la problemática.</p>
+        <p>El 15 de febrero se evidencia una tendencia a la baja en todos los departamentos, siendo uno de los dias con menos incidentes en todo el periodo analizado y en general, es el mes con menos incidentes para estos departamentos.</p>
+        <p>Antioquia presenta el pico mas alto el 14 de marzo.</p>
+        <p>Valle presenta el pico mas alto el 24 de marzo.</p>
+        <p>Santander presenta el pico mas alto el 10 de marzo, el mismo día se presenta un aumento en Antioquia y Cundinamarca.</p>
+    </div>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script type="text/javascript">
+    var allowedDepartments = ['ANTIOQUIA', 'CUNDINAMARCA', 'VALLE', 'SANTANDER'];
+
+    var svg = d3.select("#principal"),
+        margin = { top: 20, right: 80, bottom: 30, left: 50 },
+        width = svg.attr("width") - margin.left - margin.right,
+        height = svg.attr("height") - margin.top - margin.bottom,
+        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var timeParser = d3.timeParse("%Y-%m-%d");
+
+    var x = d3.scaleTime().range([0, width]),
+        y = d3.scaleLinear().range([height, 0]),
+        z = d3.scaleOrdinal(d3.schemeCategory10);
+
+    var svg1 = d3.select("#legend").style("font", "10px sans-serif");;
+
+    svg.on("mousemove", function() {
+
+        timeFormater = d3.timeFormat("%Y/%m/%d");
+
+        actualXPos = d3.event.pageX;
+        outputText = "Fecha : " + timeFormater(x.invert(d3.event.pageX));
+
+        svg.selectAll(".day_label").remove();
+        svg.selectAll("rect").remove();
+
+        svg.append("text")
+            .attr("x", 50)
+            .attr("y", 30)
+            .attr("fill", "steelblue")
+            .attr("font-weight", "bold")
+            .attr("class", "day_label")
+            .text(outputText);
+
+        svg.append("rect")
+            .attr("x", actualXPos - 9)
+            .attr("y", 0)
+            .attr("width", 1)
+            .attr("height", svg.attr("height"))
+            .style("fill", "black")
+    });
+
+    g.on("mouseleave", function() {
+        svg.selectAll(".day_label").remove();
+        svg.selectAll("rect").remove();
+    })
+
+
+    var line = d3.line()
+        .curve(d3.curveBasis)
+        .x(function(d) { return x(d.fecha); })
+        .y(function(d) { return y(d.total); });
+
+    const allowedDepartment = (departamento) => {
+        return departamento && allowedDepartments.indexOf(departamento) > -1
+    }
+
+    const getTotalsByDepartment = (aggregated, department) => {
+        if (!department)
+            return null;
+
+        filtered = aggregated.filter(function(item) {
+            return item.id === department;
+        });
+
+        if (filtered)
+            return filtered[0];
+
+        return null;
+    }
+
+    const getSingleItemByDate = (values, date) => {
+        if (!date)
+            return null;
+
+        filtered = values.filter(function(item) {
+            return item.fecha.getTime() === date.getTime();
+        });
+
+        if (filtered)
+            return filtered[0];
+
+        return null;
+    }
+
+    const buildAccumulate = (incidentsArray) => {
+        aggregated = [];
+        incidentsArray.forEach(item => {
+
+            if (allowedDepartment(item.departamento) && item.fecha) {
+
+                formatedDate = timeParser(item.fecha.substr(0, 10));
+                itemByDept = getTotalsByDepartment(aggregated, item.departamento);
+
+                if (!itemByDept) {
+                    newItem = {
+                        id: item.departamento,
+                        values: [{ fecha: formatedDate, total: 1 }]
+                    };
+                    aggregated.push(newItem);
+                } else {
+                    itemByDate = getSingleItemByDate(itemByDept.values, formatedDate)
+                    if (itemByDate)
+                        itemByDate.total += 1;
+                    else
+                        itemByDept.values.push({ fecha: formatedDate, total: 1 })
+
+                }
+            }
+        });
+
+        aggregated.forEach(item => {
+            item.values.sort(function(a, b) {
+                return (b.fecha - a.fecha);
+            });
+        });
+
+        return aggregated;
+    }
+
+    const retrieveData = async() => {
+        let page;
+        let offset = 0;
+        let data = [];
+
+        do {
+            page = await (await fetch(
+                `https://www.datos.gov.co/resource/cdhn-7vn8.json?$offset=${offset}`
+            )).json();
+            offset += 1000;
+            data = data.concat(page);
+        } while (page.length);
+        data.splice(-1, 1);
+        return data;
+    }
+
+    retrieveData().then(response => {
+        var aggregated = buildAccumulate(response);
+        x.domain(d3.extent(response, function(d) { return timeParser(d.fecha.substr(0, 10)); }));
+
+        y.domain([
+            d3.min(aggregated, function(c) { return d3.min(c.values, function(d) { return d.total; }); }),
+            d3.max(aggregated, function(c) { return d3.max(c.values, function(d) { return d.total; }); })
+        ]);
+
+        z.domain(aggregated.map(function(c) { return c.id; }));
+
+        g.append("g")
+            .attr("class", "axis axis--x")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x));
+
+        var city = g.selectAll(".city")
+            .data(aggregated)
+            .enter().append("g")
+            .attr("class", "city");
+
+        city.append("path")
+            .attr("class", "line")
+            .attr("d", function(d) { return line(d.values); })
+            .style("stroke", function(d) { return z(d.id); })
+            .on('mouseover', function(obj) {
+                d3.select(this)
+                    .style('stroke-width', '3.5px');
+            })
+            .on('mouseout', function(obj) {
+                d3.select(this)
+                    .style('stroke-width', '1.5px');
+            });
+
+        g1 = svg1.append("g")
+            .selectAll("g")
+            .data(z.domain().slice().reverse())
+            .enter().append("g")
+            .attr("transform", (d, i) => `translate(0,${i * 20})`);
+
+        g1.append("rect")
+            .attr("width", 19)
+            .attr("height", 19)
+            .attr("fill", z);
+
+        g1.append("text")
+            .attr("x", 24)
+            .attr("y", 9.5)
+            .attr("dy", "0.35em")
+            .text(d => d);
+    });
+    </script>
+</body>
+
+</html>
