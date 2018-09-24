@@ -34,7 +34,7 @@
     }
     </style>
     <h1 class="center_text">Violencia Intrafamiliar</h1>
-    <h2 class="center_text">¿Que ocurrió el 21 de Abril?</h2>
+    <h2 class="center_text">¿Que ocurrió el 8 de Abril?</h2>
     <div class="paragraph">
         <p>Producto de la <a href="https://beta.observablehq.com/@cjcarvajal/tarea-2-visualizacion-sobre-datos-abiertos">visualización anterior</a>, se pudo evidenciar que ciertos departamentos del país presentaban un alto indice de incidentes de violencia intrafamiliar, sobrepasando a todos los del pais, dichos departamentos son:</p>
         <ul>
@@ -73,12 +73,12 @@
     <hr>
     <div class="paragraph">
         <h2>Insights</h2>
-        <p>Cundinamarca presenta picos de violencia intrafamiliar los días sabados: 27 de enero, 3 de febrero, 17 de marzo, 28 de abril entre otros.</p>
-        <p>El 21 de abril se presenta el pico más alto para Cundinamarca, en el mismo dia los demas departamentos muestra un pico también. Los meses de abril, mayo y junio, se muestran como críticos para la problemática.</p>
-        <p>El 15 de febrero se evidencia una tendencia a la baja en todos los departamentos, siendo uno de los dias con menos incidentes en todo el periodo analizado y en general, es el mes con menos incidentes para estos departamentos.</p>
-        <p>Antioquia presenta el pico mas alto el 14 de marzo.</p>
-        <p>Valle presenta el pico mas alto el 24 de marzo.</p>
-        <p>Santander presenta el pico mas alto el 10 de marzo, el mismo día se presenta un aumento en Antioquia y Cundinamarca.</p>
+        <p>Cundinamarca presenta picos de violencia intrafamiliar los días domingo: 14 de enero, 21 de enero, 4 de marzo, 11 de marzo entre otros.</p>
+        <p>El 8 de abril se presenta el pico más alto para Cundinamarca, en el mismo dia los demas departamentos muestra un pico también. Los meses de abril, mayo y junio, se muestran como críticos para la problemática.</p>
+        <p>El 2 de febrero se evidencia una tendencia a la baja en todos los departamentos, siendo uno de los dias con menos incidentes en todo el periodo analizado y en general, es el mes con menos incidentes para estos departamentos.</p>
+        <p>Antioquia presenta el pico mas alto el 1 de marzo (un dia martes)</p>
+        <p>Valle presenta el pico mas alto el 11 de marzo.</p>
+        <p>Santander presenta el pico mas alto el 25 de febrero, el mismo día se presenta un aumento en Antioquia y Cundinamarca.</p>
     </div>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script type="text/javascript">
@@ -103,7 +103,8 @@
         timeFormater = d3.timeFormat("%Y/%m/%d %A");
 
         actualXPos = d3.event.pageX;
-        outputText = "Fecha : " + timeFormater(x.invert(d3.event.pageX));
+        outputText = "Fecha : " + timeFormater(x.invert(d3.event.pageX - 55)) + 
+            " - " + Math.floor(y.invert(d3.event.pageY - 430)) + " incidentes aprox";
 
         svg.selectAll(".day_label").remove();
         svg.selectAll("rect").remove();
