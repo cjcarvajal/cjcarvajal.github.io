@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Violencia Intrafamiliar 2018 - Análisis Temporal</title>
+</head>
+
+<body>
+    <style>
+        .paragraph {
+			margin-left: 50px;
+			margin-right: 50px;
+			font-size: 18px;
+		}
+
+		.center_text {
+        	text-align: center;
+    	}
+	</style>
+    <h1 class="center_text">Violencia Intrafamiliar</h1>
+    <h2 class="center_text">¿Agresiones con escopolamina?</h2>
+    <div class="paragraph">
+        <p>Continuando con la investigación sobre incidentes de violencia intrafamiliar, se tomó la decisión de hacer una análisis sobre el tipo de arma empleada en los incidentes. En todos los incidentes reportados se encontro como tipos de arma usada las siguientes:</p>
+        <ul>
+            <li>Cortopunzante</li>
+            <li>Arma de fuego</li>
+            <li>Contundente</li>
+            <li>Escopolamina</li>
+        </ul>
+        <p>Cabe aclarar que algunos de los incidentes se llevaron a cabo sin el uso de armas y en otros casos no se dejo reporte de que tipo de arma se uso. Sin embargo de lo descrito anteriormente, causa impresión una estadistica ¿Escopolamina en violencia intrafamiliar? Dada esta caracteristica se generó una visualización teniendo en cuenta el tipo de dato temporal con el que se cuenta que permita identificar los dias en que se presentaron mas incidentes con cierto tipo de arma involucrada.</p>
+        <div id="selector"></div>
+        <svg id='principal' width="960" height="270">
+        </svg>
+        <p>The visualization is based on the M. Bostock code available <a href="https://beta.observablehq.com/@mbostock/d3-calendar-view">here</a>
+        </p>
+    </div>
+    <hr>
+    <div class="paragraph">
+        <h2>WHY - WHAT - HOW</h2>
+        <h3>Tarea Principal</h3>
+        <p>Identificar los días en que se presentarón mas incidentes con cierto tipo de arma.</p>
+        <h3>Tarea Secundaria</h3>
+        <p>Analizar la tendencia en los incidentes según un tipo de arma usada.</p>
+        <p>Según la abstracción de Tamara se tiene:</p>
+        <ul>
+            <li>Identify outliers</li>
+            <li>Summarize distribution</li>
+            <li>Derive features</li>
+        </ul>
+        <h3>Abstracción de Datos</h3>
+        <p>Se trata de un dataset de tipo temporal, mostrando los incidentes desde el primero de enero del hasta el siete de julio del 2018.</p>
+        <ul>
+            <li><b>Tipo de arma:</b> Categorical</li>
+            <li><b>Semana:</b> Ordered, Sequential</li>
+            <li><b>Dia de la semana:</b> Ordered, Cyclic</li>
+            <li><b>incidentesPorDiaPorArma:</b> Ordered, Quantitative, Sequential</li>
+        </ul>
+        <h3>Marcas y Canales</h3>
+        <p>La marca usada es el <b>área</b>, los canales dependiendo del atributo son:</p>
+        <ul>
+            <li><b>Semana:</b> Position on common scale</li>
+            <li><b>Dia de la semana:</b> Spatial region</li>
+            <li><b>incidentesDepartamentoDia:</b>Color saturation between defined color scale</li>
+        </ul>
+        <p>Los meses estan delimitados como áreas dentro de la visualización, ademas los atributos de fecha, mes y número de incidentes son incluidos como labels. El tipo de arma se usa como filtro.</p>
+    </div>
+    <hr>
+    <div class="paragraph">
+        <h2>Insights</h2>
+        <ul>
+            <li>Los incidentes con escopolamina solo se presentan en enero, presentandose un pico el 13 de enero con 11 incidentes, el 20 de enero se presenta otro pico con 10 incidentes.</li>
+            <li>El primero de enero se presentó el mayor número de incidentes con armas contundentes con 213 incidentes. El 22 de abril se presenta otro pico con 179 incidentes.</li>
+            <li>Los incidentes con arma de fuego son escasos a lo largo del año, en contraste, los incidentes con arma cortopunzante son comunes a lo largo de todo el año con picos reconocidos el primero de enero y el 19 de marzo.</li>
+            <li>Se presenta un pico de incidentes sin uso de arma el 21 de enero.</li>
+        </ul>
+    </div>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script type="text/javascript">
+    const cellSize = 34;
+    const height = cellSize * 9;
+    const timeParser = d3.timeParse("%Y-%m-%d");
+    const formatDate = d3.timeFormat("%x");
+    const format = d3.format("+.2%");
+    const formatMonth = d3.timeFormat("%b")
+    const color = d3.scaleSequential(d3.interpolatePiYG).domain([1, 500])
+    let uniqueWeapons = [];
+    var weaponsData = [];
+
+    var select = d3.select('#selector')
+        .append('select')
+        .attr('class', 'select')
+        .on('change', onchange)
+
+    const svg = d3.select("#principal")
+        .style("font", "10px sans-serif")
+        .style("width", "100%")
+        .style("height", "auto")
+        .append("g");
+
+    function onchange() {
+        selectValue = d3.select('select').property('value')
+        const year = svg.selectAll("g").remove();
+
+        const totalsByWeapon = getTotalsByWeapon(weaponsData, selectValue);
+        color.domain(calculateBoundaries(totalsByWeapon.data[0].values));
+        drawCalendar(totalsByWeapon.data);
+    };
+
+    const getUniqueWeapons = (incidents) => {
+        let weapons = [];
+
+        incidents.forEach(item => {
+            let actualWeapon = item.arma_empleada;
+
+            if (actualWeapon !== '-' &&
+                weapons.indexOf(actualWeapon) < 0) {
+                weapons.push(actualWeapon);
+            }
+        });
+        return weapons;
+    }
+
+    const getDateRow = (values, date) => {
+        if (!date)
+            return null;
+
+        filtered = values.filter(function(item) {
+            return item.fecha.getTime() === date.getTime();
+        });
+
+        if (filtered)
+            return filtered[0];
+
+        return null;
+    }
+
+    const getTotalsByWeapon = (values, weapon) => {
+        if (!weapon)
+            return null;
+
+        filtered = values.filter(function(item) {
+            return item.weapon === weapon;
+        });
+
+        if (filtered)
+            return filtered[0];
+
+        return null;
+    }
+
+    const buildAccumulate = (incidentsArray, uniqueWeapons) => {
+
+        aggregated = [];
+        uniqueWeapons.forEach(weapon => aggregated.push({
+            "weapon": weapon,
+            data: [{ "key": "2018", "values": [] }]
+        }));
+
+        incidentsArray.forEach(item => {
+
+            const usedWeapon = item.arma_empleada === '-' ? 'NO REPORTADO' : item.arma_empleada;
+
+            itemByWeapon = getTotalsByWeapon(aggregated, usedWeapon);
+            formatedDate = timeParser(item.fecha.substr(0, 10));
+            dateRow = getDateRow(itemByWeapon.data[0].values, formatedDate)
+            if (dateRow)
+                dateRow.total += 1;
+            else
+                itemByWeapon.data[0].values.push({ fecha: formatedDate, total: 1 })
+        });
+
+        aggregated.forEach(byWeapon => {
+            byWeapon.data[0].values.sort(function(a, b) {
+                return (a.fecha - b.fecha);
+            });
+        })
+
+        return aggregated;
+    }
+
+    const calculateBoundaries = (totals) => {
+
+        const min = totals.reduce((min, row) => row.total < min ? row.total : min, totals[0].total);
+        const max = totals.reduce((max, row) => row.total > max ? row.total : max, totals[0].total);
+
+        return [min, max];
+    }
+
+    function pathMonth(t) {
+        const n = 7;
+        const d = Math.max(0, Math.min(n, t.getDay()));
+        const w = d3.timeSunday.count(d3.timeYear(t), t);
+        return `${d === 0 ? `M${w * cellSize},0`
+      : d === n ? `M${(w + 1) * cellSize},0`
+      : `M${(w + 1) * cellSize},0V${d * cellSize}H${w * cellSize}`}V${n * cellSize}`;
+    }
+
+    const retrieveData = async () => {
+        let page;
+        let offset = 0;
+        let data = [];
+
+        do {
+            page = await (await fetch(
+                `https://www.datos.gov.co/resource/cdhn-7vn8.json?$offset=${offset}`
+            )).json();
+            offset += 1000;
+            data = data.concat(page);
+        } while (page.length);
+        data.splice(-1, 1);
+        return data;
+    }
+
+    const handleMouseOver = (d, i) => {
+
+        timeFormater = d3.timeFormat("%Y/%m/%d %A");
+
+        svg.append("text")
+            .attr("id", "dateTag")
+            .attr("x", 40)
+            .attr("y", 30)
+            .attr("fill", "steelblue")
+            .attr("font-weight", "bold")
+            .attr("font-size", "18")
+            .text(timeFormater(d.fecha) + " " + d.total + " incidente(s)");
+    }
+
+    const handleMouseOut = (d, i) => {
+        d3.select("#dateTag").remove();
+    }
+
+    const drawCalendar = (values) => {
+
+        const year = svg.selectAll("g").data(values).enter()
+            .append("g")
+            .attr("transform", `translate(40,70)`);
+
+        year.append("text")
+            .attr("x", -5)
+            .attr("y", -5)
+            .attr("font-weight", "bold")
+            .attr("text-anchor", "end")
+            .text("2018");
+
+        year.append("g")
+            .attr("text-anchor", "end")
+            .selectAll("text")
+            .data(d3.range(7).map(i => new Date(1995, 0, i)))
+            .enter().append("text")
+            .attr("x", -5)
+            .attr("y", d => ((d.getDay() + 6) % 7 + 0.5) * cellSize)
+            .attr("dy", "0.31em")
+            .text(d => "SMTWTFS" [d.getDay()]);
+
+        year.append("g")
+            .selectAll("rect")
+            .data(d => d.values)
+            .enter().append("rect")
+            .attr("width", cellSize - 1)
+            .attr("height", cellSize - 1)
+            .attr("x", d => d3.timeSunday.count(d3.timeYear(d.fecha), d.fecha) * cellSize + 0.5)
+            .attr("y", d => ((d.fecha.getDay() + 6) % 7) * cellSize + 0.5)
+            .attr("fill", d => color(d.total))
+            .on("mouseover", function(d, i) {
+                handleMouseOver(d, i);
+            })
+            .on("mouseout", function(d, i) {
+                handleMouseOut(d, i);
+            });
+
+        //.append("title")
+        //   .text(d => `${formatDate(d.fecha)}: ${format(d.value)}`);
+
+        const month = year.append("g")
+            .selectAll("g")
+            .data(d => d3.timeMonths(d3.timeMonth(d.values[0].fecha), d.values[d.values.length - 1].fecha))
+            .enter().append("g");
+
+        month.filter((d, i) => i).append("path")
+            .attr("fill", "none")
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 3)
+            .attr("d", pathMonth);
+
+        month.append("text")
+            .attr("x", d => d3.timeSunday.count(d3.timeYear(d), d3.timeSunday.ceil(d)) * cellSize + 2)
+            .attr("y", -5)
+            .text(formatMonth);
+    }
+
+    retrieveData().then(response => {
+        uniqueWeapons = getUniqueWeapons(response);
+        weaponsData = buildAccumulate(response, uniqueWeapons);
+
+        var options = select
+            .selectAll('option')
+            .data(uniqueWeapons).enter()
+            .append('option')
+            .text(function(d) { return d; });
+
+        color.domain(calculateBoundaries(weaponsData[0].data[0].values));
+        drawCalendar(weaponsData[0].data);
+    });
+    </script>
+</body>
+
+</html>
