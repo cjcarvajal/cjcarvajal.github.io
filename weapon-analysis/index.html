@@ -78,7 +78,7 @@
     </div>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script type="text/javascript">
-    const cellSize = 34;
+    const cellSize = 25;
     const height = cellSize * 9;
     const timeParser = d3.timeParse("%Y-%m-%d");
     const formatDate = d3.timeFormat("%x");
@@ -204,7 +204,7 @@
 
         do {
             page = await (await fetch(
-                `https://www.datos.gov.co/resource/cdhn-7vn8.json?$offset=${offset}`
+                `https://www.datos.gov.co/resource/ta8z-ayhu.json?$offset=${offset}`
             )).json();
             offset += 1000;
             data = data.concat(page);
