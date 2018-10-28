@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Violencia Intrafamiliar 2018 - Análisis Temporal</title>
+</head>
+
+<body>
+    <style>
+        .container {
+           display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .paragraph {
+            margin-left: 50px;
+            margin-right: 50px;
+            font-size: 18px;
+        }
+
+        .center_text {
+            text-align: center;
+        }
+
+        img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 20px;
+        }
+    </style>
+    <h1 class="center_text">Rutas Sociales SATENA</h1>
+    <h2 class="center_text">Ayuda, quiero llegar a Tarapacá!</h2>
+    <div class="paragraph">
+        <p>El SERVICIO AÉREO A TERRITORIOS NACIONALES S.A. <b>SATENA</b>, es una areolinea estatal, conformada como Sociedad de Economía Mixta por Acciones del orden Nacional, de carácter anónimo y vinculada al Ministerio de Defensa Nacional, con objeto social de prestar servicio aéreo de pasajeros, correo y carga. Se enfoca en prestar un servicio de transporte aéreo para las regiones menos desarolladas del pais, dicho enfoque se plantea como una obligación ante los problemas geográficos, de orden público o pobreza de ciertas regiones del país, que impiden que otros operadores presten el servicio, lo que permite integrar estas regiones aisladas al desarrollo económico y social del resto del país.</p>
+        <img src="Satena_en_Quibdó.jpg" alt="Satena en Quibdó" height="200">
+        <p>Usando los datos disponibles en <a href="https://www.datos.gov.co/Seguridad-y-Defensa/RUTAS-COMERCIALES-SATENA/4hnp-vug9">datos abiertos</a> que presenta las rutas de Satena a las regiones con poca (o ninguna) prescencia de areolineas junto con la frecuencia de vuelos por semana se genera la siguiente visualización.</p>
+        <div class="container">
+            <svg id='principal' width="960" height="500">
+            </svg>
+        </div>
+        <p>Visualización basada en el codigo de M. Bostock disponible <a href="https://beta.observablehq.com/@mbostock/d3-force-directed-graph">aquí</a>.
+    </div>
+    <hr>
+    <div class="paragraph">
+        <h2>WHY - WHAT - HOW</h2>
+        <h3>Tarea Principal</h3>
+        <p>Explorar la topología de la red que representa las rutas que Satena provee</p>
+        <h3>Tarea Secundaria</h3>
+        <p>Localizar los caminos posibles para ir de un municipio a otro con Satena.</p>
+        <p>Localizar los puntos del país de más dificil acceso.</p>
+        <p>Según la abstracción de Tamara se tiene:</p>
+        <ul>
+            <li>Explore topology</li>
+            <li>Locate paths</li>
+            <li>Identify outliers</li>
+        </ul>
+        <h3>Abstracción de Datos</h3>
+        <p>Se trata de un dataset de tipo red, los items o nodos son los municipios de Colombia (con su respectivo aeropuerto), los enlaces son los vuelos entre los distintos municipios.</p>
+        <ul>
+            <li><b>Nombre de Municipio</b> Categorical</li>
+            <li><b>Frecuencia semanal de vuelos:</b> Derivado categoricamente, generando tres tipos: 1 vuelo por semana, 2 vuelos por semanas, 3 o mas vuelos por semana.</li>
+        </ul>
+        <h3>Marcas y Canales</h3>
+        <p>Puntos para los nodos, lineas para los enlaces.</p>
+        <ul>
+            <li><b>Nombre de Municipio:</b> Spatial region</li>
+            <li><b>Frecuencia semanal de vuelos:</b> Color hue</li>
+        </ul>
+        <p>Se realiza <b>Encode Separate</b> para los nodos. Se realiza un <b>map</b> de la variable categórica frecuencia de vuelos a una escala de color.</p>
+    </div>
+    <hr>
+    <div class="paragraph">
+        <h2>Insights</h2>
+        <ul>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script type="text/javascript">
+    const width = 960;
+    const height = 450;
+    const svg = d3.select("#principal").attr("viewBox", [-width / 2, -height / 2, width, height]);
+    const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+    const factor = 1.5;
+
+    var link;
+    var node;
+
+    var borderPath = svg.append("rect")
+        .attr("x", -width / 2)
+        .attr("y", -height / 2)
+        .attr("height", height)
+        .attr("width", width)
+        .style("stroke", 'black')
+        .style("fill", "none")
+        .style("stroke-width", 5);
+
+    drawLegend('1', 0);
+    drawLegend('2', 15);
+    drawLegend('3', 30);
+
+    function drawLegend(frecuency, rowHeight) {
+        const xInit = -width / 2 + 10;
+        const xEnd = -width / 2 + 30;
+        const y = height / 2 - 50 + rowHeight;
+
+        svg.append("line")
+            .style("stroke-width", 2)
+            .attr("stroke", getColor(frecuency))
+            .attr("x1", xInit)
+            .attr("y1", y)
+            .attr("x2", xEnd)
+            .attr("y2", y);
+
+        text = frecuency === '1' ? '1 vuelo por semana' : frecuency === '2' ? '2 vuelos por semana' : '3 o más vuelos por semana'
+
+        svg.append("text")
+            .attr("x", xEnd + 4)
+            .attr("y", y + 5)
+            .text(text)
+            .attr("font-size", "15");
+    }
+
+    const retrieveData = async () => {
+        let data = [];
+        return await (await fetch(
+            'https://cjcarvajal.github.io/flight-analysis/data/tree_data.json'
+        )).json();
+    }
+
+    function forceSimulation(nodes, links) {
+        return d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id))
+            .force("charge", d3.forceManyBody())
+            .force("center", d3.forceCenter());
+    }
+
+    function ticked() {
+        link
+            .attr("x1", d => factor * d.source.x)
+            .attr("y1", d => factor * d.source.y)
+            .attr("x2", d => factor * d.target.x)
+            .attr("y2", d => factor * d.target.y);
+
+        node
+            .attr("cx", d => factor * d.x)
+            .attr("cy", d => factor * d.y);
+    }
+
+    function drag(simulation) {
+
+        return d3.drag()
+            .on("start", d => {
+                if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            })
+            .on("drag", d => {
+                d.fx = d3.event.x;
+                d.fy = d3.event.y;
+            })
+            .on("end", d => {
+                if (!d3.event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            });
+    }
+
+    const handleMouseOver = (d, i) => {
+
+        svg.append("text")
+            .attr("id", "localityTag")
+            .attr("x", (-width / 2) + 10)
+            .attr("y", (-height / 2 + 50) - 10)
+            .attr("fill", "steelblue")
+            .attr("font-weight", "bold")
+            .attr("font-size", "18")
+            .text(getAirportInfo(d.id).city);
+    }
+
+    const handleMouseOut = (d, i) => {
+        d3.select("#localityTag").remove();
+    }
+
+    const getAirportInfo = (code) => {
+        if (!code)
+            return null;
+
+        filtered = airports.filter(function(item) {
+            return item.code === code;
+        });
+
+        if (filtered)
+            return filtered[0];
+
+        return null;
+    }
+
+    function getColor(flightsFrecuency) {
+        if (parseInt(flightsFrecuency) >= 3)
+            return colorScale('3')
+
+        return colorScale(flightsFrecuency);
+    }
+
+    retrieveData().then(data => {
+
+        const links = data.links.map(d => Object.create(d));
+        const nodes = data.nodes.map(d => Object.create(d));
+        const simulation = forceSimulation(nodes, links).on("tick", ticked);
+
+        link = svg.append("g")
+            .attr("stroke", "#999")
+            .attr("stroke-opacity", 0.6)
+            .selectAll("line")
+            .data(links)
+            .enter().append("line")
+            .attr("stroke", d => getColor(d.value));
+
+        node = svg.append("g")
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 1.5)
+            .selectAll("circle")
+            .data(nodes)
+            .enter().append("circle")
+            .attr("r", 5)
+            .attr("fill", "grey")
+            .call(drag(simulation))
+            .on("mouseover", function(d, i) {
+                handleMouseOver(d, i);
+            })
+            .on("mouseout", function(d, i) {
+                handleMouseOut(d, i);
+            });
+
+    });
+
+    const airports = [
+        { 'code': 'LMN', 'city': 'Maicao', 'airport': 'Aeropuerto Jorge Isaacs' },
+        { 'code': 'APO', 'city': 'Apartadó / Carepa', 'airport': 'Antonio Roldán Betancourt Airport' },
+        { 'code': 'AUC', 'city': 'Arauca', 'airport': 'Santiago Pérez Quiroz Airport' },
+        { 'code': 'AXM', 'city': 'Armenia / La Tebaida', 'airport': 'El Edén International Airport' },
+        { 'code': 'BSC', 'city': 'Bahía Solano', 'airport': 'José Celestino Mutis Airport' },
+        { 'code': 'EJA', 'city': 'Barrancabermeja', 'airport': 'Yariguíes Airport' },
+        { 'code': 'BAQ', 'city': 'Barranquilla / Soledad', 'airport': 'Ernesto Cortissoz International Airport' },
+        { 'code': 'BOG', 'city': 'Bogotá', 'airport': 'El Dorado International Airport' },
+        { 'code': 'BGA', 'city': 'Bucaramanga / Lebrija', 'airport': 'Palonegro International Airport' },
+        { 'code': 'BUN', 'city': 'Buenaventura', 'airport': 'Gerardo Tobar López Airport' },
+        { 'code': 'CLO', 'city': 'Cali / Palmira', 'airport': 'Alfonso Bonilla Aragón International Airport' },
+        { 'code': 'CTG', 'city': 'Cartagena', 'airport': 'Rafael Núñez International Airport' },
+        { 'code': 'CRC', 'city': 'Cartago', 'airport': 'Santa Ana Airport' },
+        { 'code': 'CZU', 'city': 'Corozal', 'airport': 'Las Brujas Airport' },
+        { 'code': 'CUC', 'city': 'Cúcuta', 'airport': 'Camilo Daza International Airport' },
+        { 'code': 'EYP', 'city': 'Yopal (El Yopal)', 'airport': 'El Alcaraván Airport(El Yopal Airport)' },
+        { 'code': 'FLA', 'city': 'Florencia', 'airport': 'Gustavo Artunduaga Paredes Airport' },
+        { 'code': 'GIR', 'city': 'Girardot / Flandes', 'airport': 'Santiago Vila Airport' },
+        { 'code': 'GPI', 'city': 'Guapi', 'airport': 'Juan Casiano Airport' },
+        { 'code': 'IBE', 'city': 'Ibagué', 'airport': 'Perales Airport' },
+        { 'code': 'LET', 'city': 'Leticia', 'airport': 'Alfredo Vásquez Cobo International Airport' },
+        { 'code': 'MZL', 'city': 'Manizales', 'airport': 'La Nubia Airport' },
+        { 'code': 'MQU', 'city': 'Mariquita', 'airport': 'Mariquita Airport' },
+        { 'code': 'EOH', 'city': 'Medellín', 'airport': 'Enrique Olaya Herrera Airport' },
+        { 'code': 'MDE', 'city': 'Medellín / Rionegro', 'airport': 'José María Córdova International Airport' },
+        { 'code': 'MVP', 'city': 'Mitú', 'airport': 'Fabio Alberto León Bentley Airport' },
+        { 'code': 'MTR', 'city': 'Montería', 'airport': 'Los Garzones Airport' },
+        { 'code': 'NVA', 'city': 'Neiva', 'airport': 'Benito Salas Airport' },
+        { 'code': 'PSO', 'city': 'Pasto / Chachagüí', 'airport': 'Antonio Nariño Airport' },
+        { 'code': 'PEI', 'city': 'Pereira', 'airport': 'Matecaña International Airport' },
+        { 'code': 'PPN', 'city': 'Popayán', 'airport': 'Guillermo León Valencia Airport' },
+        { 'code': 'PVA', 'city': 'Providencia Island', 'airport': 'El Embrujo Airport' },
+        { 'code': 'PUU', 'city': 'Puerto Asís', 'airport': 'Tres de Mayo Airport' },
+        { 'code': 'PCR', 'city': 'Puerto Carreño', 'airport': 'Germán Olano Airport' },
+        { 'code': 'UIB', 'city': 'Quibdó', 'airport': 'El Caraño Airport' },
+        { 'code': 'RCH', 'city': 'Riohacha', 'airport': 'Almirante Padilla Airport' },
+        { 'code': 'ADZ', 'city': 'San Andrés', 'airport': 'Gustavo Rojas Pinilla Intl Airport' },
+        { 'code': 'SJE', 'city': 'San José del Guaviare', 'airport': 'Jorge Enrique González Torres Airport' },
+        { 'code': 'SVI', 'city': 'San Vicente del Caguán', 'airport': 'Eduardo Falla Solano Airport' },
+        { 'code': 'SMR', 'city': 'Santa Marta', 'airport': 'Simón Bolívar International Airport' },
+        { 'code': 'RVE', 'city': 'Saravena', 'airport': 'Los Colonizadores Airport' },
+        { 'code': 'TME', 'city': 'Tame', 'airport': 'Gabriel Vargas Santos Airport' },
+        { 'code': 'TLU', 'city': 'Tolú', 'airport': 'Golfo de Morrosquillo Airport' },
+        { 'code': 'TCO', 'city': 'Tumaco', 'airport': 'La Florida Airport' },
+        { 'code': 'VUP', 'city': 'Valledupar', 'airport': 'Alfonso López Pumarejo Airport' },
+        { 'code': 'VVC', 'city': 'Villavicencio', 'airport': 'Vanguardia Airport' },
+        { 'code': 'ACD', 'city': 'Acandí', 'airport': 'Alcides Fernández Airport' },
+        { 'code': 'AFI', 'city': 'Amalfi', 'airport': 'Amalfi Airport' },
+        { 'code': 'ACR', 'city': 'Araracuara', 'airport': 'Araracuara Airport' },
+        { 'code': 'ARQ', 'city': 'Arauquita', 'airport': 'El Troncal Airport' },
+        { 'code': 'NBB', 'city': 'Barranco Minas', 'airport': 'Barranco Minas Airport' },
+        { 'code': 'CPB', 'city': 'Capurganá', 'airport': 'Capurganá Airport' },
+        { 'code': 'CCO', 'city': 'Carimagua', 'airport': 'Carimagua Airport' },
+        { 'code': 'CUO', 'city': 'Caruru', 'airport': 'Carurú Airport' },
+        { 'code': 'CAQ', 'city': 'Caucasia', 'airport': 'Juan H. White Airport' },
+        { 'code': 'CPL', 'city': 'Chaparral', 'airport': 'General Navas Pardo Airport' },
+        { 'code': 'IGO', 'city': 'Chigorodó', 'airport': 'Jaime Ortíz Betancur Airport' },
+        { 'code': 'CIM', 'city': 'Cimitarra', 'airport': 'Cimitarra Airport' },
+        { 'code': 'COG', 'city': 'Condoto', 'airport': 'Mandinga Airport' },
+        { 'code': 'RAV', 'city': 'Cravo Norte', 'airport': 'Cravo Norte Airport' },
+        { 'code': 'BHF', 'city': 'Cupica', 'airport': 'Cupica Airport' },
+        { 'code': 'EBG', 'city': 'El Bagre', 'airport': 'El Bagre Airport (El Tomin Airport)' },
+        { 'code': 'ELB', 'city': 'El Banco', 'airport': 'Las Flores Airport' },
+        { 'code': 'ECR', 'city': 'El Charco', 'airport': 'El Charco Airport' },
+        { 'code': 'LGT', 'city': 'Gaviotas (La Gaviota)', 'airport': 'Las Gaviotas Airport (La Gaviota Airport)' },
+        { 'code': 'HTZ', 'city': 'Hato Corozal', 'airport': 'Hato Corozal Airport' },
+        { 'code': 'IPI', 'city': 'Ipiales / Aldana', 'airport': 'San Luis Airport' },
+        { 'code': 'JUO', 'city': 'Juradó', 'airport': 'Juradó Airport' },
+        { 'code': 'LCR', 'city': 'La Chorrera', 'airport': 'La Chorrera Airport' },
+        { 'code': '', 'city': '', 'airport': '(Virgilio Barco Vargas Airport)' },
+        { 'code': 'LMC', 'city': 'La Macarena', 'airport': 'La Macarena Airport' },
+        { 'code': 'LPD', 'city': 'La Pedrera', 'airport': 'La Pedrera Airport' },
+        { 'code': 'LPE', 'city': 'La Primavera', 'airport': 'La Primavera Airport' },
+        { 'code': 'MGN', 'city': 'Magangué', 'airport': 'Baracoa Regional Airport' },
+        { 'code': 'MCJ', 'city': 'Maicao', 'airport': 'Jorge Isaacs Airport(La Mina Airport)' },
+        { 'code': 'MFS', 'city': 'Miraflores', 'airport': 'Miraflores Airport' },
+        { 'code': 'MMP', 'city': 'Mompós (Mompóx)', 'airport': 'San Bernardo Airport' },
+        { 'code': 'MTB', 'city': 'Montelíbano', 'airport': 'Montelíbano Airport' },
+        { 'code': 'NCI', 'city': 'Necoclí', 'airport': 'Necoclí Airport(Antioquia Airport)' },
+        { 'code': 'NQU', 'city': 'Nuquí', 'airport': 'Reyes Murillo Airport' },
+        { 'code': 'OCV', 'city': 'Ocaña', 'airport': 'Aguas Claras Airport' },
+        { 'code': 'ORC', 'city': 'Orocue', 'airport': 'Orocue Airport' },
+        { 'code': 'RON', 'city': 'Paipa', 'airport': 'Juan José Rondón Airport' },
+        { 'code': 'PZA', 'city': 'Paz de Ariporo', 'airport': 'Paz de Ariporo Airport' },
+        { 'code': 'PTX', 'city': 'Pitalito', 'airport': 'Contador Airport' },
+        { 'code': 'PLT', 'city': 'Plato', 'airport': 'Plato Airport (Las Flores Airport)' },
+        { 'code': 'PBE', 'city': 'Puerto Berrío', 'airport': 'Morela Airport' },
+        { 'code': 'PDA', 'city': 'Puerto Inírida', 'airport': 'Obando Airport (César Gaviria Trujillo Airport)' },
+        { 'code': 'LQM', 'city': 'Puerto Leguízamo', 'airport': 'Caucayá Airport' },
+        { 'code': 'NAR', 'city': 'Puerto Nare', 'airport': 'Puerto Nare Airport' },
+        { 'code': 'OTU', 'city': 'Remedios', 'airport': 'Otú Airport' },
+        { 'code': 'SNT', 'city': 'Sabana de Torres', 'airport': 'Las Cruces Airport' },
+        { 'code': 'SQE', 'city': 'San Luis de Palenque', 'airport': 'San Luis de Palenque Airport' },
+        { 'code': 'SRS', 'city': 'San Marcos', 'airport': 'San Marcos Airport' },
+        { 'code': 'SSL', 'city': 'Santa Rosalía', 'airport': 'Santa Rosalía Airport' },
+        { 'code': 'SOX', 'city': 'Sogamoso', 'airport': 'Alberto Lleras Camargo Airport' },
+        { 'code': 'TTM', 'city': 'Tablón de Tamará', 'airport': 'Tablón de Tamará Airport' },
+        { 'code': 'TCD', 'city': 'Tarapacá', 'airport': 'Tarapacá Airport' },
+        { 'code': 'TIB', 'city': 'Tibú', 'airport': 'Tibú Airport' },
+        { 'code': 'TBD', 'city': 'Timbiquí', 'airport': 'Timbiqui Airport' },
+        { 'code': 'TDA', 'city': 'Trinidad', 'airport': 'Trinidad Airport' },
+        { 'code': 'ULQ', 'city': 'Tuluá', 'airport': 'Heriberto Gíl Martínez Airport (Farfán Airport)' },
+        { 'code': 'TRB', 'city': 'Turbo', 'airport': 'Gonzalo Mejía Airport' },
+        { 'code': 'URI', 'city': 'Uribe', 'airport': 'Uribe Airport' },
+        { 'code': 'URR', 'city': 'Urrao', 'airport': 'Urrao Airport' },
+        { 'code': 'VGZ', 'city': 'Villagarzón', 'airport': 'Villa Garzón Airport(Cananguchal Airport)' },
+        { 'code': 'CVE', 'city': 'Coveñas', 'airport': 'Coveñas Airport' },
+        { 'code': 'PAL', 'city': 'Palanquero / Puerto Salgar', 'airport': 'Captain Germán Olano Moreno Air Base' },
+        { 'code': 'PYA', 'city': 'Puerto Boyacá', 'airport': 'Velasquez Airport' },
+        { 'code': 'TQS', 'city': 'Tres Esquinas', 'airport': 'Captain Ernesto Esguerra Cubides Air Base' },
+        { 'code': 'API', 'city': 'Villavicencio / Apiay', 'airport': 'Captain Luis F. Gómez Niño Air Base' },
+        { 'code': 'MHF', 'city': 'Morichal', 'airport': 'Morichal Airport' },
+        { 'code': 'AYG', 'city': 'San Vicente del Caguán / Yaguara', 'airport': 'Yaguara II Airport' }
+    ]
+    </script>
+</body>
+
+</html>
