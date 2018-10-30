@@ -1,0 +1,113 @@
+[
+  {
+    "id": "Patrinomio Liquido",
+    "values": [
+      {
+        "fecha": "2011",
+        "total": 23
+      },
+      {
+        "fecha": "2012",
+        "total": 30
+      },
+      {
+        "fecha": "2013",
+        "total": 50
+      },
+      {
+        "fecha": "2014",
+        "total": 40
+      },
+      {
+        "fecha": "2015",
+        "total": 25
+      },
+      {
+        "fecha": "2016",
+        "total": 43
+      },
+      {
+        "fecha": "2017",
+        "total": 60
+      },
+      {
+        "fecha": "2018",
+        "total": 30
+      }
+    ]
+  },
+  {
+    "id": "Patrinomio Bruto",
+    "values": [
+      {
+        "fecha": "2011",
+        "total": 50
+      },
+      {
+        "fecha": "2012",
+        "total": 60
+      },
+      {
+        "fecha": "2013",
+        "total": 76
+      },
+      {
+        "fecha": "2014",
+        "total": 80
+      },
+      {
+        "fecha": "2015",
+        "total": 85
+      },
+      {
+        "fecha": "2016",
+        "total": 94
+      },
+      {
+        "fecha": "2017",
+        "total": 105
+      },
+      {
+        "fecha": "2018",
+        "total": 110
+      }
+    ]
+  },
+  {
+    "id": "Pasivo",
+    "values": [
+      {
+        "fecha": "2011",
+        "total": 43
+      },
+      {
+        "fecha": "2012",
+        "total": 50
+      },
+      {
+        "fecha": "2013",
+        "total": 70
+      },
+      {
+        "fecha": "2014",
+        "total": 60
+      },
+      {
+        "fecha": "2015",
+        "total": 45
+      },
+      {
+        "fecha": "2016",
+        "total": 63
+      },
+      {
+        "fecha": "2017",
+        "total": 80
+      },
+      {
+        "fecha": "2018",
+        "total": 50
+      }
+    ]
+  }
+]
