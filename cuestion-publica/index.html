@@ -8,9 +8,24 @@
 
 <body>
     <style type="text/css">
+    .paragraph {
+        margin-left: 50px;
+        margin-right: 50px;
+        font-size: 18px;
+    }
+
     .container {
         display: flex;
         flex-direction: column;
+    }
+
+    .center_text {
+        text-align: center;
+    }
+
+    .line {
+        fill: none;
+        stroke-width: 1.5px;
     }
 
     .legend_container {
@@ -18,18 +33,125 @@
         margin-left: 50px;
     }
     </style>
+    <h1 class="center_text">Sabemos lo que hiciste</h1>
+    <h2 class="center_text">Propuesta de mockups</h2>
+    <div class="paragraph">
+        <p>En esta visualización se pretende hacer evidente la tendencia del patrimonio liquido de cada congresista. Tiene como posible desventaja mostrar el patrimonio como un atributo continuo entre los años representados, cuando en realidad se tienen valores discretos.</p>
+    </div>
     <div class="container">
         <svg id='principal' width="960" height="500"></svg>
         <svg id='legend' class="legend_container" width="200" height="80"></svg>
     </div>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script type="text/javascript">
-    	const retrieveData = async () => {
+    var svgCongress = d3.select("#principal"),
+        margin = { top: 20, right: 80, bottom: 30, left: 50 },
+        congressWidth = svgCongress.attr("width") - margin.left - margin.right,
+        congressHeight = svgCongress.attr("height") - margin.top - margin.bottom,
+        congressG = svgCongress.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var congressX = d3.scaleTime().range([0, congressWidth]),
+        congressY = d3.scaleLinear().range([congressHeight, 0]),
+        congressZ = d3.scaleOrdinal(d3.schemeCategory10);
+
+    var svgLegend = d3.select("#legend").style("font", "10px sans-serif");;
+
+    const retrieveCongressData = async () => {
         let data = [];
         return await (await fetch(
-            'https://cjcarvajal.github.io/flight-analysis/data/tree_data.json'
+            'https://cjcarvajal.github.io/cuestion-publica/congress.json'
         )).json();
     }
+
+    svgCongress.on("mousemove", function() {
+
+        timeFormater = d3.timeFormat("%Y");
+
+        actualXPos = d3.event.pageX;
+        actualYPos = d3.event.pageY;
+
+        outputText = "Año : " + timeFormater(congressX.invert(actualXPos)) + " - " + Math.round(congressY.invert(actualYPos)) + " millones de pesos";
+
+        svgCongress.selectAll(".day_label").remove();
+        svgCongress.selectAll("rect").remove();
+
+        svgCongress.append("text")
+            .attr("x", 50)
+            .attr("y", 30)
+            .attr("fill", "steelblue")
+            .attr("font-weight", "bold")
+            .attr("class", "day_label")
+            .text(outputText);
+
+        svgCongress.append("rect")
+            .attr("x", actualXPos - 9)
+            .attr("y", 0)
+            .attr("width", 1)
+            .attr("height", svgCongress.attr("height"))
+            .style("fill", "black")
+    });
+
+    congressG.on("mouseleave", function() {
+        svgCongress.selectAll(".day_label").remove();
+        svgCongress.selectAll("rect").remove();
+    })
+
+    var line = d3.line()
+        .curve(d3.curveBasis)
+        .x(function(d) { return congressX(new Date(d.fecha)); })
+        .y(function(d) { return congressY(d.total); });
+
+    retrieveCongressData().then(response => {
+        congressX.domain([new Date("2011"), new Date("2018")]);
+
+        congressY.domain([
+            d3.min(response, function(c) { return d3.min(c.values, function(d) { return d.total; }); }),
+            d3.max(response, function(c) { return d3.max(c.values, function(d) { return d.total; }); })
+        ]);
+
+        congressZ.domain(response.map(function(c) { return c.id; }));
+
+        congressG.append("g")
+            .attr("class", "axis axis--x")
+            .attr("transform", "translate(0," + congressHeight + ")")
+            .call(d3.axisBottom(congressX));
+
+        var congressMan = congressG.selectAll(".congressMan")
+            .data(response)
+            .enter().append("g")
+            .attr("class", "congressMan");
+
+        congressMan.append("path")
+            .attr("class", "line")
+            .attr("d", function(d) { return line(d.values); })
+            .style("stroke", function(d) { return congressZ(d.id); })
+            .on('mouseover', function(obj) {
+                d3.select(this)
+                    .style('stroke-width', '3.5px');
+            })
+            .on('mouseout', function(obj) {
+                d3.select(this)
+                    .style('stroke-width', '1.5px');
+            });
+
+        g1 = svgLegend.append("g")
+            .selectAll("g")
+            .data(congressZ.domain().slice().reverse())
+            .enter().append("g")
+            .attr("transform", (d, i) => `translate(0,${i * 20})`);
+
+        g1.append("rect")
+            .attr("width", 19)
+            .attr("height", 19)
+            .attr("fill", congressZ);
+
+        g1.append("text")
+            .attr("x", 24)
+            .attr("y", 9.5)
+            .attr("dy", "0.35em")
+            .text(d => d);
+
+    });
     </script>
 </body>
 
