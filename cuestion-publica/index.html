@@ -50,6 +50,14 @@
         <svg id='principalAverage' width="640" height="334"></svg>
         <svg id='legendAverage' class="legend_container" width="200" height="80"></svg>
     </div>
+    <hr>
+    <div class="paragraph">
+        <p>En esta visualización se presentan el comportamientos de ciertas variables financiaeras de interes a lo largo del tiempo, totalizando por congresista. Las variables elegidas aca son arbitrarias y solo pretenden dar un ejemplo.</p>
+    </div>
+    <div class="container">
+        <svg id='principalFinancial' width="640" height="334"></svg>
+        <svg id='legendFinancial' class="legend_container" width="200" height="80"></svg>
+    </div>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script type="text/javascript">
     var svgAverage = d3.select("#principalAverage"),
@@ -61,16 +69,21 @@
     var congressX = d3.scaleTime().range([0, congressWidth]),
         congressY = d3.scaleLinear().range([congressHeight, 0]),
         averageY = d3.scaleLinear().range([congressHeight, 0]),
-        averageZ = d3.scaleOrdinal(d3.schemeCategory10)
-    congressZ = d3.scaleOrdinal(d3.schemeCategory10);
+        averageZ = d3.scaleOrdinal(d3.schemeCategory10),
+        financialY = d3.scaleLinear().range([congressHeight, 0]),
+        financialZ = d3.scaleOrdinal(d3.schemeCategory10),
+        congressZ = d3.scaleOrdinal(d3.schemeCategory10);
 
     congressX.domain([new Date("2011"), new Date("2018")]);
 
     var svgCongress = d3.select("#principal"),
         congressG = svgCongress.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var svgFinancial = d3.select("#principalFinancial"),
+        financialG = svgFinancial.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var svgLegend = d3.select("#legend").style("font", "10px sans-serif");;
     var svgLegendAverage = d3.select("#legendAverage").style("font", "10px sans-serif");;
+    var svgLegendFinancial = d3.select("#legendFinancial").style("font", "10px sans-serif");;
 
     const retrieveCongressData = async () => {
         let data = [];
@@ -86,19 +99,30 @@
         )).json();
     }
 
-    svgCongress.on("mousemove", function() {
+    const retrieveFinancialData = async () => {
+        let data = [];
+        return await (await fetch(
+            'https://cjcarvajal.github.io/cuestion-publica/financial.json'
+        )).json();
+    }
+
+    /*
+     * Financial mockup Begin
+     */
+
+     svgFinancial.on("mousemove", function() {
 
         timeFormater = d3.timeFormat("%Y");
 
         actualXPos = d3.event.pageX;
         actualYPos = d3.event.pageY;
 
-        outputText = "Año : " + timeFormater(congressX.invert(actualXPos)) + " - " + Math.round(congressY.invert(actualYPos)) + " millones de pesos";
+        outputText = "Año : " + timeFormater(congressX.invert(actualXPos)) + " - " + (Math.round(financialY.invert(actualYPos)) + 363) + " millones de pesos";
 
-        svgCongress.selectAll(".day_label").remove();
-        svgCongress.selectAll("rect").remove();
+        svgFinancial.selectAll(".day_label").remove();
+        svgFinancial.selectAll("rect").remove();
 
-        svgCongress.append("text")
+        svgFinancial.append("text")
             .attr("x", 50)
             .attr("y", 30)
             .attr("fill", "steelblue")
@@ -106,18 +130,82 @@
             .attr("class", "day_label")
             .text(outputText);
 
-        svgCongress.append("rect")
+        svgFinancial.append("rect")
             .attr("x", actualXPos - 9)
             .attr("y", 0)
             .attr("width", 1)
-            .attr("height", svgCongress.attr("height"))
+            .attr("height", svgFinancial.attr("height"))
             .style("fill", "black")
     });
 
-    congressG.on("mouseleave", function() {
-        svgCongress.selectAll(".day_label").remove();
-        svgCongress.selectAll("rect").remove();
+    financialG.on("mouseleave", function() {
+        svgFinancial.selectAll(".day_label").remove();
+        svgFinancial.selectAll("rect").remove();
     })
+
+    var financialLine = d3.line()
+        .curve(d3.curveBasis)
+        .x(function(d) { return congressX(new Date(d.fecha)); })
+        .y(function(d) { return financialY(d.total); });
+
+    retrieveFinancialData().then(response => {
+
+        financialY.domain([
+            d3.min(response, function(c) { return d3.min(c.values, function(d) { return d.total; }); }),
+            d3.max(response, function(c) { return d3.max(c.values, function(d) { return d.total; }); })
+        ]);
+
+        financialZ.domain(response.map(function(c) { return c.id; }));
+
+        financialG.append("g")
+            .attr("class", "axis axis--x")
+            .attr("transform", "translate(0," + congressHeight + ")")
+            .call(d3.axisBottom(congressX));
+
+        var financial = financialG.selectAll(".financial")
+            .data(response)
+            .enter().append("g")
+            .attr("class", "financial");
+
+        financial.append("path")
+            .attr("class", "line")
+            .attr("d", function(d) { return financialLine(d.values); })
+            .style("stroke", function(d) { return financialZ(d.id); })
+            .on('mouseover', function(obj) {
+                d3.select(this)
+                    .style('stroke-width', '3.5px');
+            })
+            .on('mouseout', function(obj) {
+                d3.select(this)
+                    .style('stroke-width', '1.5px');
+            });
+
+        g1 = svgLegendFinancial.append("g")
+            .selectAll("g")
+            .data(financialZ.domain().slice().reverse())
+            .enter().append("g")
+            .attr("transform", (d, i) => `translate(0,${i * 20})`);
+
+        g1.append("rect")
+            .attr("width", 19)
+            .attr("height", 19)
+            .attr("fill", financialZ);
+
+        g1.append("text")
+            .attr("x", 24)
+            .attr("y", 9.5)
+            .attr("dy", "0.35em")
+            .text(d => d);
+
+    });
+
+    /*
+     *Financial mockup End
+     */
+
+    /*
+     * Average mockup Begin
+     */
 
     svgAverage.on("mousemove", function() {
 
@@ -174,7 +262,7 @@
         var average = averageG.selectAll(".average")
             .data(response)
             .enter().append("g")
-            .attr("class", "congressMan");
+            .attr("class", "average");
 
         average.append("path")
             .attr("class", "line")
@@ -207,6 +295,46 @@
             .text(d => d);
 
     });
+    /*
+     * Average mockup end
+     */
+
+    /*
+     * Congress mockup Begin
+     */
+
+    svgCongress.on("mousemove", function() {
+
+        timeFormater = d3.timeFormat("%Y");
+
+        actualXPos = d3.event.pageX;
+        actualYPos = d3.event.pageY;
+
+        outputText = "Año : " + timeFormater(congressX.invert(actualXPos)) + " - " + Math.round(congressY.invert(actualYPos)) + " millones de pesos";
+
+        svgCongress.selectAll(".day_label").remove();
+        svgCongress.selectAll("rect").remove();
+
+        svgCongress.append("text")
+            .attr("x", 50)
+            .attr("y", 30)
+            .attr("fill", "steelblue")
+            .attr("font-weight", "bold")
+            .attr("class", "day_label")
+            .text(outputText);
+
+        svgCongress.append("rect")
+            .attr("x", actualXPos - 9)
+            .attr("y", 0)
+            .attr("width", 1)
+            .attr("height", svgCongress.attr("height"))
+            .style("fill", "black")
+    });
+
+    congressG.on("mouseleave", function() {
+        svgCongress.selectAll(".day_label").remove();
+        svgCongress.selectAll("rect").remove();
+    })
 
     var line = d3.line()
         .curve(d3.curveBasis)
@@ -263,6 +391,10 @@
             .text(d => d);
 
     });
+
+    /*
+     * Congress mockup end
+     */
     </script>
 </body>
 
