@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <style type="text/css">
+    .container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .legend_container {
+        margin-bottom: 20px;
+        margin-left: 50px;
+    }
+    </style>
+    <div class="container">
+        <svg id='principal' width="960" height="500"></svg>
+        <svg id='legend' class="legend_container" width="200" height="80"></svg>
+    </div>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script type="text/javascript">
+    	const retrieveData = async () => {
+        let data = [];
+        return await (await fetch(
+            'https://cjcarvajal.github.io/flight-analysis/data/tree_data.json'
+        )).json();
+    }
+    </script>
+</body>
+
+</html>
