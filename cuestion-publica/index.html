@@ -62,308 +62,102 @@
     <script type="text/javascript">
     var svgAverage = d3.select("#principalAverage"),
         margin = { top: 20, right: 80, bottom: 30, left: 50 },
-        congressWidth = svgAverage.attr("width") - margin.left - margin.right,
-        congressHeight = svgAverage.attr("height") - margin.top - margin.bottom,
+        chartWidth = svgAverage.attr("width") - margin.left - margin.right,
+        chartHeight = svgAverage.attr("height") - margin.top - margin.bottom,
         averageG = svgAverage.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    var congressX = d3.scaleTime().range([0, congressWidth]),
-        congressY = d3.scaleLinear().range([congressHeight, 0]),
-        averageY = d3.scaleLinear().range([congressHeight, 0]),
+    var commonXScale = d3.scaleTime().range([0, chartWidth]),
+        averageY = d3.scaleLinear().range([chartHeight, 0]),
         averageZ = d3.scaleOrdinal(d3.schemeCategory10),
-        financialY = d3.scaleLinear().range([congressHeight, 0]),
+        financialY = d3.scaleLinear().range([chartHeight, 0]),
         financialZ = d3.scaleOrdinal(d3.schemeCategory10),
-        congressZ = d3.scaleOrdinal(d3.schemeCategory10);
+        congressY = d3.scaleLinear().range([chartHeight, 0]),
+        congressZ = d3.scaleOrdinal(d3.schemeCategory10),
+        lineConsecutiveId = 0;
 
-    congressX.domain([new Date("2011"), new Date("2018")]);
+    commonXScale.domain([new Date("2011"), new Date("2018")]);
 
     var svgCongress = d3.select("#principal"),
         congressG = svgCongress.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     var svgFinancial = d3.select("#principalFinancial"),
         financialG = svgFinancial.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    var svgLegend = d3.select("#legend").style("font", "10px sans-serif");;
-    var svgLegendAverage = d3.select("#legendAverage").style("font", "10px sans-serif");;
-    var svgLegendFinancial = d3.select("#legendFinancial").style("font", "10px sans-serif");;
+    var svgLegend = d3.select("#legend").style("font", "10px sans-serif");
+    var svgLegendAverage = d3.select("#legendAverage").style("font", "10px sans-serif");
+    var svgLegendFinancial = d3.select("#legendFinancial").style("font", "10px sans-serif");
 
-    const retrieveCongressData = async () => {
+    const retrieveData = async (dataUrl) => {
         let data = [];
-        return await (await fetch(
-            'https://cjcarvajal.github.io/cuestion-publica/congress.json'
-        )).json();
+        return await (await fetch(dataUrl)).json();
     }
 
-    const retrieveAverageData = async () => {
-        let data = [];
-        return await (await fetch(
-            'https://cjcarvajal.github.io/cuestion-publica/average.json'
-        )).json();
+    function manageMouseEvent(chartSVG, scaleY) {
+
+        chartSVG.on("mousemove", function() {
+
+            timeFormater = d3.timeFormat("%Y");
+
+            actualXPos = d3.event.pageX;
+            actualYPos = d3.event.pageY;
+
+            outputText = "Año : " + timeFormater(commonXScale.invert(actualXPos)) + " - " + (Math.round(scaleY.invert(actualYPos)) + 363) + " millones de pesos";
+
+            chartSVG.selectAll(".day_label").remove();
+            chartSVG.selectAll("rect").remove();
+
+            chartSVG.append("text")
+                .attr("x", 50)
+                .attr("y", 30)
+                .attr("fill", "steelblue")
+                .attr("font-weight", "bold")
+                .attr("class", "day_label")
+                .text(outputText);
+
+            chartSVG.append("rect")
+                .attr("x", actualXPos - 9)
+                .attr("y", 0)
+                .attr("width", 1)
+                .attr("height", chartSVG.attr("height"))
+                .style("fill", "black")
+        });
+
+        chartSVG.on("mouseleave", function() {
+            svgFinancial.selectAll(".day_label").remove();
+            svgFinancial.selectAll("rect").remove();
+        })
     }
 
-    const retrieveFinancialData = async () => {
-        let data = [];
-        return await (await fetch(
-            'https://cjcarvajal.github.io/cuestion-publica/financial.json'
-        )).json();
-    }
+    function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend) {
 
-    /*
-     * Financial mockup Begin
-     */
-
-     svgFinancial.on("mousemove", function() {
-
-        timeFormater = d3.timeFormat("%Y");
-
-        actualXPos = d3.event.pageX;
-        actualYPos = d3.event.pageY;
-
-        outputText = "Año : " + timeFormater(congressX.invert(actualXPos)) + " - " + (Math.round(financialY.invert(actualYPos)) + 363) + " millones de pesos";
-
-        svgFinancial.selectAll(".day_label").remove();
-        svgFinancial.selectAll("rect").remove();
-
-        svgFinancial.append("text")
-            .attr("x", 50)
-            .attr("y", 30)
-            .attr("fill", "steelblue")
-            .attr("font-weight", "bold")
-            .attr("class", "day_label")
-            .text(outputText);
-
-        svgFinancial.append("rect")
-            .attr("x", actualXPos - 9)
-            .attr("y", 0)
-            .attr("width", 1)
-            .attr("height", svgFinancial.attr("height"))
-            .style("fill", "black")
-    });
-
-    financialG.on("mouseleave", function() {
-        svgFinancial.selectAll(".day_label").remove();
-        svgFinancial.selectAll("rect").remove();
-    })
-
-    var financialLine = d3.line()
-        .curve(d3.curveBasis)
-        .x(function(d) { return congressX(new Date(d.fecha)); })
-        .y(function(d) { return financialY(d.total); });
-
-    retrieveFinancialData().then(response => {
-
-        financialY.domain([
-            d3.min(response, function(c) { return d3.min(c.values, function(d) { return d.total; }); }),
-            d3.max(response, function(c) { return d3.max(c.values, function(d) { return d.total; }); })
+        scaleY.domain([
+            d3.min(data, function(c) { return d3.min(c.values, function(d) { return d.total; }); }),
+            d3.max(data, function(c) { return d3.max(c.values, function(d) { return d.total; }); })
         ]);
 
-        financialZ.domain(response.map(function(c) { return c.id; }));
+        colorScale.domain(data.map(function(c) { return c.id; }));
 
-        financialG.append("g")
+        chartG.append("g")
             .attr("class", "axis axis--x")
-            .attr("transform", "translate(0," + congressHeight + ")")
-            .call(d3.axisBottom(congressX));
+            .attr("transform", "translate(0," + chartHeight + ")")
+            .call(d3.axisBottom(commonXScale));
 
-        var financial = financialG.selectAll(".financial")
-            .data(response)
+        var lines = chartG.selectAll(".dataLine")
+            .data(data)
             .enter().append("g")
-            .attr("class", "financial");
+            .attr("class", "dataLine");
 
-        financial.append("path")
+        var lineDraw = d3.line()
+            .curve(d3.curveBasis)
+            .x(function(d) { return commonXScale(new Date(d.fecha)); })
+            .y(function(d) { return scaleY(d.total); });
+
+        var path = lines.append("path")
             .attr("class", "line")
-            .attr("d", function(d) { return financialLine(d.values); })
-            .style("stroke", function(d) { return financialZ(d.id); })
-            .on('mouseover', function(obj) {
-                d3.select(this)
-                    .style('stroke-width', '3.5px');
+            .attr("d", function(d) { return lineDraw(d.values); })
+            .attr("id", function(d, i) {
+                return "line" + ++lineConsecutiveId;
             })
-            .on('mouseout', function(obj) {
-                d3.select(this)
-                    .style('stroke-width', '1.5px');
-            });
-
-        g1 = svgLegendFinancial.append("g")
-            .selectAll("g")
-            .data(financialZ.domain().slice().reverse())
-            .enter().append("g")
-            .attr("transform", (d, i) => `translate(0,${i * 20})`);
-
-        g1.append("rect")
-            .attr("width", 19)
-            .attr("height", 19)
-            .attr("fill", financialZ);
-
-        g1.append("text")
-            .attr("x", 24)
-            .attr("y", 9.5)
-            .attr("dy", "0.35em")
-            .text(d => d);
-
-    });
-
-    /*
-     *Financial mockup End
-     */
-
-    /*
-     * Average mockup Begin
-     */
-
-    svgAverage.on("mousemove", function() {
-
-        timeFormater = d3.timeFormat("%Y");
-
-        actualXPos = d3.event.pageX;
-        actualYPos = d3.event.pageY;
-
-        outputText = "Año : " + timeFormater(congressX.invert(actualXPos)) + " - " + (Math.round(averageY.invert(actualYPos)) + 142) + " millones de pesos";
-
-        svgAverage.selectAll(".day_label").remove();
-        svgAverage.selectAll("rect").remove();
-
-        svgAverage.append("text")
-            .attr("x", 50)
-            .attr("y", 30)
-            .attr("fill", "steelblue")
-            .attr("font-weight", "bold")
-            .attr("class", "day_label")
-            .text(outputText);
-
-        svgAverage.append("rect")
-            .attr("x", actualXPos - 9)
-            .attr("y", 0)
-            .attr("width", 1)
-            .attr("height", svgAverage.attr("height"))
-            .style("fill", "black")
-    });
-
-    averageG.on("mouseleave", function() {
-        svgAverage.selectAll(".day_label").remove();
-        svgAverage.selectAll("rect").remove();
-    })
-
-    var averageLine = d3.line()
-        .curve(d3.curveBasis)
-        .x(function(d) { return congressX(new Date(d.fecha)); })
-        .y(function(d) { return averageY(d.total); });
-
-    retrieveAverageData().then(response => {
-
-        averageY.domain([
-            d3.min(response, function(c) { return d3.min(c.values, function(d) { return d.total; }); }),
-            d3.max(response, function(c) { return d3.max(c.values, function(d) { return d.total; }); })
-        ]);
-
-        averageZ.domain(response.map(function(c) { return c.id; }));
-
-        averageG.append("g")
-            .attr("class", "axis axis--x")
-            .attr("transform", "translate(0," + congressHeight + ")")
-            .call(d3.axisBottom(congressX));
-
-        var average = averageG.selectAll(".average")
-            .data(response)
-            .enter().append("g")
-            .attr("class", "average");
-
-        average.append("path")
-            .attr("class", "line")
-            .attr("d", function(d) { return averageLine(d.values); })
-            .style("stroke", function(d) { return congressZ(d.id); })
-            .on('mouseover', function(obj) {
-                d3.select(this)
-                    .style('stroke-width', '3.5px');
-            })
-            .on('mouseout', function(obj) {
-                d3.select(this)
-                    .style('stroke-width', '1.5px');
-            });
-
-        g1 = svgLegendAverage.append("g")
-            .selectAll("g")
-            .data(averageZ.domain().slice().reverse())
-            .enter().append("g")
-            .attr("transform", (d, i) => `translate(0,${i * 20})`);
-
-        g1.append("rect")
-            .attr("width", 19)
-            .attr("height", 19)
-            .attr("fill", averageZ);
-
-        g1.append("text")
-            .attr("x", 24)
-            .attr("y", 9.5)
-            .attr("dy", "0.35em")
-            .text(d => d);
-
-    });
-    /*
-     * Average mockup end
-     */
-
-    /*
-     * Congress mockup Begin
-     */
-
-    svgCongress.on("mousemove", function() {
-
-        timeFormater = d3.timeFormat("%Y");
-
-        actualXPos = d3.event.pageX;
-        actualYPos = d3.event.pageY;
-
-        outputText = "Año : " + timeFormater(congressX.invert(actualXPos)) + " - " + Math.round(congressY.invert(actualYPos)) + " millones de pesos";
-
-        svgCongress.selectAll(".day_label").remove();
-        svgCongress.selectAll("rect").remove();
-
-        svgCongress.append("text")
-            .attr("x", 50)
-            .attr("y", 30)
-            .attr("fill", "steelblue")
-            .attr("font-weight", "bold")
-            .attr("class", "day_label")
-            .text(outputText);
-
-        svgCongress.append("rect")
-            .attr("x", actualXPos - 9)
-            .attr("y", 0)
-            .attr("width", 1)
-            .attr("height", svgCongress.attr("height"))
-            .style("fill", "black")
-    });
-
-    congressG.on("mouseleave", function() {
-        svgCongress.selectAll(".day_label").remove();
-        svgCongress.selectAll("rect").remove();
-    })
-
-    var line = d3.line()
-        .curve(d3.curveBasis)
-        .x(function(d) { return congressX(new Date(d.fecha)); })
-        .y(function(d) { return congressY(d.total); });
-
-    retrieveCongressData().then(response => {
-
-        congressY.domain([
-            d3.min(response, function(c) { return d3.min(c.values, function(d) { return d.total; }); }),
-            d3.max(response, function(c) { return d3.max(c.values, function(d) { return d.total; }); })
-        ]);
-
-        congressZ.domain(response.map(function(c) { return c.id; }));
-
-        congressG.append("g")
-            .attr("class", "axis axis--x")
-            .attr("transform", "translate(0," + congressHeight + ")")
-            .call(d3.axisBottom(congressX));
-
-        var congressMan = congressG.selectAll(".congressMan")
-            .data(response)
-            .enter().append("g")
-            .attr("class", "congressMan");
-
-        congressMan.append("path")
-            .attr("class", "line")
-            .attr("d", function(d) { return line(d.values); })
-            .style("stroke", function(d) { return congressZ(d.id); })
+            .style("stroke", function(d) { return colorScale(d.id); })
             .on('mouseover', function(obj) {
                 d3.select(this)
                     .style('stroke-width', '3.5px');
@@ -375,26 +169,70 @@
 
         g1 = svgLegend.append("g")
             .selectAll("g")
-            .data(congressZ.domain().slice().reverse())
+            .data(colorScale.domain().slice().reverse())
             .enter().append("g")
             .attr("transform", (d, i) => `translate(0,${i * 20})`);
 
         g1.append("rect")
             .attr("width", 19)
             .attr("height", 19)
-            .attr("fill", congressZ);
+            .attr("fill", colorScale);
 
         g1.append("text")
             .attr("x", 24)
             .attr("y", 9.5)
             .attr("dy", "0.35em")
             .text(d => d);
+    }
 
+    function animatePath() {
+        var i;
+        for (i = 1; i <= lineConsecutiveId; i++) {
+            var path = d3.select('#line' + i);
+            var totalLength = path.node().getTotalLength();
+
+            d3.selectAll("#line" + i).attr("stroke-dasharray", totalLength + " " + totalLength)
+                .attr("stroke-dashoffset", totalLength)
+                .transition()
+                .duration(4000)
+                .delay(0)
+                .attr("stroke-dashoffset", 0)
+                .style("stroke-width", 3)
+        }
+    }
+
+    /*
+     *Financial mockup
+     */
+
+    manageMouseEvent(svgFinancial, financialY);
+
+    retrieveData('https://cjcarvajal.github.io/cuestion-publica/financial.json').then(response => {
+        drawMultiLineChart(response, financialY, financialG, financialZ, svgLegendFinancial);
+        animatePath();
     });
 
     /*
-     * Congress mockup end
+     * Average mockup
      */
+
+    manageMouseEvent(svgAverage, averageY);
+
+    retrieveData('https://cjcarvajal.github.io/cuestion-publica/average.json').then(response => {
+        drawMultiLineChart(response, averageY, averageG, averageZ, svgLegendAverage);
+        animatePath();
+    });
+
+    /*
+     * Congress mockup Begin
+     */
+
+    manageMouseEvent(svgCongress, congressY);
+
+    retrieveData('https://cjcarvajal.github.io/cuestion-publica/congress.json').then(response => {
+        drawMultiLineChart(response, congressY, congressG, congressZ, svgLegend);
+        animatePath();
+    });
     </script>
 </body>
 
