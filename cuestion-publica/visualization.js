@@ -38,7 +38,7 @@ function manageMouseEvent(chartSVG, scaleY) {
         actualXPos = d3.event.pageX;
         actualYPos = d3.event.pageY;
 
-        outputText = "Año : " + timeFormater(commonXScale.invert(actualXPos)) + " - " + (Math.round(scaleY.invert(actualYPos)) + 363) + " millones de pesos";
+        outputText = "Año : " + timeFormater(commonXScale.invert(actualXPos)) + " - " + (Math.round(scaleY.invert(actualYPos)) + 719) + " millones de pesos";
 
         chartSVG.selectAll(".day_label").remove();
         chartSVG.selectAll("rect").remove();
@@ -52,7 +52,7 @@ function manageMouseEvent(chartSVG, scaleY) {
             .text(outputText);
 
         chartSVG.append("rect")
-            .attr("x", actualXPos - 9)
+            .attr("x", actualXPos - 321)
             .attr("y", 0)
             .attr("width", 1)
             .attr("height", chartSVG.attr("height"))
