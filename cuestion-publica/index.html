@@ -4,29 +4,47 @@
 <head>
     <meta charset="UTF-8">
     <title>Cuestion Publica - Sabemos lo que hiciste</title>
-    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" type="text/css" href="styles/general_styles.css" />
+    <link rel="stylesheet" type="text/css" href="styles/vis_styles.css" />
 </head>
 
 <body>
     <div id='sections'>
         <section id="pin0" class="wrapper">
-            <h1 class="center_text">Sabemos lo que hiciste</h1>
-        </section>
-        <section id="pin1" class="wrapper">
-            <div class="paragraph">
-                <p>Desde principios de 2018 Cuestión Pública empezó un proceso legal para que algunos congresistas entregaran sus declaraciones de rentan, dado que al tener este cargo deberían ser transparentes con esta información.
-                </p>
-                <h3>El Objetivo de Cuestión Pública</h3>
-                <p>Revisar sí estos congresistas se han enriquecido “extrañamente” en el ejercicio del cargo</p>
-                <h3>El Problema</h3>
-                <p>Hoy no existe ninguna figura legal que obligue a un congresista a entregar esta información</p>
-                <h3>La Solución</h3>
-                <p><b>Tutelas!!</b> Gran regalo de la constitución del 91</p>
+            <div class="container">
+                <div class="title_box">
+                    <p class="title">Sabemos lo que hiciste</p>
+                    <hr class="separator">
+                    <p class="subtitle">Congresistas</p>
+                </div>
+                <img src="resources/senators.png" width="80%">
+                <img src="resources/cp_logo.png" width="20%">
             </div>
         </section>
-        <section id="pin2" class="wrapper">
+        <section id="pin1" class="wrapper_image_1">
+            <div class="paragraph">
+                <div class="transparent_box">
+                    <p class="fixed_second_page">Desde principios de 2018 <span class="principal_span">Cuestión Pública</span> empezó un proceso legal para que algunos congresistas entregaran sus declaraciones de renta, dado que al tener este cargo deberían ser transparentes con esta información.</p>
+                </div>
+            </div>
+        </section>
+        <section id="pin2" class="wrapper_image_2">
             <div class="container">
-                <img src="pic1.png" height="450">
+                <div class="fixed_third_page">
+                    <p>
+                        <span class="inside_title">
+                            <u>El Objetivo de</u>
+                            <span class="principal_span">
+                                <u>Cuestión Pública:</u>
+                            </span>
+                        </span>
+                    </p>
+                    <p>Revisar sí estos congresistas han presentado un comportamiento anormal en su patrimonio en el ejercicio del cargo, ya sean altos crecimientos o caídas.</p>
+                    <p><u><span class="inside_title">El Problema :</span></u></p>
+                    <p>Hoy no existe ninguna figura legal que obligue a un congresista a entregar esta información</p>
+                    <p><u><span class="inside_title">La Solución:</span></u></p>
+                    <p><span class="secondary_span">Tutelas!!</span> Gran regalo de la constitución del 91</p>
+                </div>
             </div>
         </section>
         <section id="pin3" class="wrapper">
@@ -60,8 +78,8 @@
     </div>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.6/ScrollMagic.min.js"></script>
-    <script src="visualization.js"></script>
-    <script src="scroller.js"></script>
+    <script src="controller/visualization.js"></script>
+    <script src="controller/scroller.js"></script>
     </script>
 </body>
 
