@@ -145,7 +145,7 @@ function animatePath() {
 
 manageMouseEvent(svgFinancial, financialY);
 
-retrieveData('https://cjcarvajal.github.io/cuestion-publica/financial.json').then(response => {
+retrieveData('https://cjcarvajal.github.io/cuestion-publica/data/financial.json').then(response => {
     drawMultiLineChart(response, financialY, financialG, financialZ, svgLegendFinancial);
     animatePath();
 });
@@ -156,7 +156,7 @@ retrieveData('https://cjcarvajal.github.io/cuestion-publica/financial.json').the
 
 manageMouseEvent(svgAverage, averageY);
 
-retrieveData('https://cjcarvajal.github.io/cuestion-publica/average.json').then(response => {
+retrieveData('https://cjcarvajal.github.io/cuestion-publica/data/average.json').then(response => {
     drawMultiLineChart(response, averageY, averageG, averageZ, svgLegendAverage);
     animatePath();
 });
@@ -167,7 +167,7 @@ retrieveData('https://cjcarvajal.github.io/cuestion-publica/average.json').then(
 
 manageMouseEvent(svgCongress, congressY);
 
-retrieveData('https://cjcarvajal.github.io/cuestion-publica/congress.json').then(response => {
+retrieveData('https://cjcarvajal.github.io/cuestion-publica/data/congress.json').then(response => {
     drawMultiLineChart(response, congressY, congressG, congressZ, svgLegend);
     animatePath();
 });

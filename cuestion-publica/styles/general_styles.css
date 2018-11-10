@@ -5,6 +5,15 @@ p {
     font-weight: bold;
 }
 
+
+.separator {
+    display: block;
+    height: 1px;
+    width: 200px;
+    border: 0;
+    border-top: 1px solid red;
+}
+
 .title {
     font-family: 'Britannic';
     font-size: 44px;
@@ -48,18 +57,8 @@ p {
     text-align: center;
 }
 
-.line {
-    fill: none;
-    stroke-width: 1.5px;
-}
-
-.legend_container {
-    margin-bottom: 20px;
-    margin-left: 50px;
-}
-
 .wrapper {
-    height: 600px;
+    height: 610px;
     padding-bottom: 80px;
 }
 
@@ -82,9 +81,19 @@ p {
 .fixed_second_page {
     position: absolute;
     top: 260px;
-    left: 600px;
+    left: 620px;
     width: 480px;
     text-align: justify;
+}
+
+.transparent_box_second_page {
+    position: absolute;
+    top: 260px;
+    left: 600px;
+    width: 520px;
+    height: 160px;
+    opacity: 0.2;
+    background-color: white;
 }
 
 .fixed_third_page {
@@ -95,9 +104,14 @@ p {
     text-align: center;
 }
 
-.transparent_box {
+.transparent_box_third_page {
+    position: absolute;
+    top: 140px;
+    left: 80px;
+    width: 520px;
+    height: 460px;
     opacity: 0.8;
-    background-color: white;
+    background-color: #4B0950;
 }
 
 .principal_span {
