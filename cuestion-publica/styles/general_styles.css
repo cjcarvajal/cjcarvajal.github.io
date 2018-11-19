@@ -1,154 +1,94 @@
 body {
-    font-family: 'Arial Rounded MT Bold';
+    font-family: 'universc', sans-serif;
 }
 
-.intro_paragraph {
+.wrapper {}
+
+.container {}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.upper_image_container {
+    width: 1200px;
+    height: 100%;
+    margin: 0;
+}
+
+.upper_image {
+    width: 100%;
+    height: 300px;
+}
+
+.upper_title {
+    text-align: left;
+    width: 100%;
+    margin-bottom: 20px;
+    margin-top: 30px;
+    padding-left: 80px;
+    max-width: 90%
+}
+
+.title {
+    font-size: 40px;
+    font-weight: 400;
+    font-style: normal;
+    text-align: right;
+    line-height: 1.6;
+}
+
+.section_text {
+    text-align: left;
+    width: 60%;
     font-size: 20px;
-    color: white;
+    font-weight: 500;
+    line-height: 1.6;
+    padding-left: 80px;
+    margin-bottom: 100px;
+}
+
+.red_subtitle {
+    color: #F52749;
+    font-style: italic;
     font-weight: bold;
+}
+
+.red_text {
+    color: #F52749;
+}
+
+.enlarged_text {
+    font-size: 25px;
+    line-height: 1.4;
+}
+
+.super_enlarged_text {
+    font-size: 30px;
+    line-height: 1.4;
 }
 
 .separator {
     display: block;
-    height: 1px;
-    width: 200px;
+    height: 10px;
+    width: 100%;
     border: 0;
-    border-top: 1px solid red;
+    border-top: 5px solid #B9B9B9;
 }
 
-.pin_separator {
-    display: block;
-    height: 1px;
-    width: 1200px;
-    border: 0;
-    border-top: 1px solid red;
+.graphic {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-.title {
-    font-size: 44px;
-    font-weight: bold;
-    color: #614051;
-    margin-top: 0px;
+.remove_margin {
     margin-bottom: 0px;
 }
 
-.subtitle {
-    font-size: 40px;
-    font-weight: bold;
-    color: #614051;
-    margin-top: 0px;
-    margin-bottom: 0px;
-}
-
-.title_box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-}
-
-.pin_title {
-    font-size: 32px;
-    font-weight: bold;
-    color: #614051;
-
-}
-
-.paragraph {
-    margin-left: 50px;
-    margin-right: 50px;
+.paragraph_text {
     font-size: 18px;
-}
-
-.section_text {
-    font-size: 18px;
-    color: grey;
-    margin-top: 150px;
-}
-
-.container {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.section_container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.center_text {
-    text-align: center;
-}
-
-.wrapper {
-    height: 610px;
-    padding-bottom: 80px;
-}
-
-.wrapper_image_1 {
-    height: 800px;
-    margin: auto;
-    padding-bottom: 80px;
-    background: url('../resources/justice.png') no-repeat;
-    background-size: 100%;
-}
-
-.wrapper_image_2 {
-    height: 800px;
-    margin: auto;
-    padding-bottom: 80px;
-    background: url('../resources/monopoly.png') no-repeat;
-    background-size: 100%;
-}
-
-.fixed_second_page {
-    position: absolute;
-    top: 260px;
-    left: 620px;
-    width: 480px;
-    text-align: justify;
-}
-
-.transparent_box_second_page {
-    position: absolute;
-    top: 260px;
-    left: 600px;
-    width: 520px;
-    height: 160px;
-    opacity: 0.2;
-    background-color: white;
-}
-
-.fixed_third_page {
-    position: absolute;
-    top: 160px;
-    left: 100px;
-    width: 480px;
-    text-align: center;
-}
-
-.transparent_box_third_page {
-    position: absolute;
-    top: 140px;
-    left: 80px;
-    width: 520px;
-    height: 460px;
-    opacity: 0.8;
-    background-color: #4B0950;
-}
-
-.principal_span {
-    color: red;
-}
-
-.secondary_span {
-    color: aqua;
-}
-
-.inside_title {
-    font-size: 24px;
 }
