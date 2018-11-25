@@ -29,16 +29,11 @@ var svgLegend = d3.select("#legend").style("font", "10px sans-serif");
 var svgLegendAverage = d3.select("#legendAverage").style("font", "10px sans-serif");
 var svgLegendFinancial = d3.select("#legendFinancial").style("font", "10px sans-serif");
 
-function processAverage(congressmanByGroupData) {
-	
-}
-
 /*
  * Average mockup
  */
-retrieveData('https://cjcarvajal.github.io/cuestion-publica/data/average.json').then(response => {
-    const processedData = processAverage(response);
-    drawMultiLineChart(processedData, averageY, averageG, averageZ, svgLegendAverage);
+retrieveData('https://cjcarvajal.github.io/cuestion-publica/data/financial.json').then(response => {
+    drawMultiLineChart(response, averageY, averageG, averageZ, svgLegendAverage);
     animatePath();
 });
 
