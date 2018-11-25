@@ -1,18 +1,18 @@
 [  
-   {  
-      "id":"Promedio Patimonio Liquido",
+    {  
+      "id":"Patimonio Liquido",
       "values":[  
          {  
             "fecha":"2014",
-            "total":277259616
+            "total":481404896
          },
          {  
             "fecha":"2015",
-            "total":312616512
+            "total":597660928
          },
          {  
             "fecha":"2016",
-            "total":398914624
+            "total":579396416
          }
       ]
    },
