@@ -18,7 +18,7 @@ var commonXScale = d3.scaleTime().range([0, chartWidth]),
     congressZ = d3.scaleOrdinal(d3.schemeCategory10),
     lineConsecutiveId = 0;
 
-commonXScale.domain([new Date("2011"), new Date("2018")]);
+commonXScale.domain([new Date("2014"), new Date("2016")]);
 
 var svgCongress = d3.select("#principal"),
     congressG = svgCongress.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
