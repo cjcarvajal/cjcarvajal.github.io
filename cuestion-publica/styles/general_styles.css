@@ -1,5 +1,5 @@
 body {
-    font-family: 'universc', sans-serif;
+    font-family: 'Montserrat', sans-serif;
 }
 
 h1 {
@@ -17,28 +17,11 @@ h2 {
     margin-bottom: 200px;
 }
 
-@keyframes text_animation {
-    0% {
-        transform: scale(0);
-    }
-
-    50% {
-        transform: scale(0.5);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-
-}
-
 .wrapper {
     margin-right: 60px;
     margin-left: 60px;
     margin-bottom: 50px;
 }
-
-.container {}
 
 .title_images_container {
     display: flex;

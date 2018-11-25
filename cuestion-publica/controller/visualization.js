@@ -29,42 +29,6 @@ const retrieveData = async (dataUrl) => {
     return await (await fetch(dataUrl)).json();
 }
 
-function manageMouseEvent(chartSVG, scaleY) {
-
-    chartSVG.on("mousemove", function() {
-
-        timeFormater = d3.timeFormat("%Y");
-
-        actualXPos = d3.event.pageX;
-        actualYPos = d3.event.pageY;
-
-        outputText = "Año : " + timeFormater(commonXScale.invert(actualXPos)) + " - " + (Math.round(scaleY.invert(actualYPos)) + 719) + " millones de pesos";
-
-        chartSVG.selectAll(".day_label").remove();
-        chartSVG.selectAll("rect").remove();
-
-        chartSVG.append("text")
-            .attr("x", 50)
-            .attr("y", 30)
-            .attr("fill", "steelblue")
-            .attr("font-weight", "bold")
-            .attr("class", "day_label")
-            .text(outputText);
-
-        chartSVG.append("rect")
-            .attr("x", actualXPos - 321)
-            .attr("y", 0)
-            .attr("width", 1)
-            .attr("height", chartSVG.attr("height"))
-            .style("fill", "black")
-    });
-
-    chartSVG.on("mouseleave", function() {
-        svgFinancial.selectAll(".day_label").remove();
-        svgFinancial.selectAll("rect").remove();
-    })
-}
-
 function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend) {
 
     scaleY.domain([
@@ -142,9 +106,6 @@ function animatePath() {
 /*
  *Financial mockup
  */
-
-manageMouseEvent(svgFinancial, financialY);
-
 retrieveData('https://cjcarvajal.github.io/cuestion-publica/data/financial.json').then(response => {
     drawMultiLineChart(response, financialY, financialG, financialZ, svgLegendFinancial);
     animatePath();
@@ -153,9 +114,6 @@ retrieveData('https://cjcarvajal.github.io/cuestion-publica/data/financial.json'
 /*
  * Average mockup
  */
-
-manageMouseEvent(svgAverage, averageY);
-
 retrieveData('https://cjcarvajal.github.io/cuestion-publica/data/average.json').then(response => {
     drawMultiLineChart(response, averageY, averageG, averageZ, svgLegendAverage);
     animatePath();
@@ -164,9 +122,6 @@ retrieveData('https://cjcarvajal.github.io/cuestion-publica/data/average.json').
 /*
  * Congress mockup Begin
  */
-
-manageMouseEvent(svgCongress, congressY);
-
 retrieveData('https://cjcarvajal.github.io/cuestion-publica/data/congress.json').then(response => {
     drawMultiLineChart(response, congressY, congressG, congressZ, svgLegend);
     animatePath();
