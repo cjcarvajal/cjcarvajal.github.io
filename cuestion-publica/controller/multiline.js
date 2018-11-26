@@ -7,10 +7,10 @@ function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend) {
 
     colorScale.domain(data.map(function(c) { return c.id; }));
 
-    chartG.append("g")
-        .attr("class", "axis axis--x")
-        .attr("transform", "translate(0," + chartHeight + ")")
-        .call(d3.axisBottom(commonXScale));
+    //chartG.append("g")
+    //    .attr("class", "axis axis--x")
+    //    .attr("transform", "translate(0," + chartHeight + ")")
+    //    .call(d3.axisBottom(commonXScale));
 
     var lines = chartG.selectAll(".dataLine")
         .data(data)
@@ -37,6 +37,29 @@ function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend) {
             d3.select(this)
                 .style('stroke-width', '1.5px');
         });
+
+    // gridlines in y axis function
+    function make_y_gridlines() {
+        return d3.axisLeft(scaleY)
+            .ticks(5)
+    }
+
+    // add the Y gridlines
+    chartG.append("g")
+        .attr("class", "grid")
+        .call(make_y_gridlines()
+            .tickSize(-chartWidth)
+            .tickFormat("")
+        );
+
+    // add the X Axis
+    chartG.append("g")
+        .attr("transform", "translate(0," + chartHeight + ")")
+        .call(d3.axisBottom(commonXScale));
+
+    // add the Y Axis
+    chartG.append("g")
+        .call(d3.axisLeft(scaleY));
 
     g1 = svgLegend.append("g")
         .selectAll("g")

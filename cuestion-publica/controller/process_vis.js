@@ -4,7 +4,7 @@ const retrieveData = async (dataUrl) => {
 }
 
 var svgAverage = d3.select("#principalAverage"),
-    margin = { top: 20, right: 80, bottom: 30, left: 50 },
+    margin = { top: 20, right: 80, bottom: 30, left: 70 },
     chartWidth = svgAverage.attr("width") - margin.left - margin.right,
     chartHeight = svgAverage.attr("height") - margin.top - margin.bottom,
     averageG = svgAverage.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
