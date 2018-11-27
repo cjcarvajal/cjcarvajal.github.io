@@ -7,11 +7,6 @@ function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend) {
 
     colorScale.domain(data.map(function(c) { return c.id; }));
 
-    //chartG.append("g")
-    //    .attr("class", "axis axis--x")
-    //    .attr("transform", "translate(0," + chartHeight + ")")
-    //    .call(d3.axisBottom(commonXScale));
-
     var lines = chartG.selectAll(".dataLine")
         .data(data)
         .enter().append("g")
