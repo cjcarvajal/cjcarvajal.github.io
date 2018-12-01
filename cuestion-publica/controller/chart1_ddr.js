@@ -105,7 +105,7 @@ d3.json(dataFile, function(error, allData) {
     let binContainerEnter = binContainer.enter()
       .append("g")
         .attr("class", "gBin")
-        .attr("transform", d => `translate(${x(d.x0)}, ${height})`)
+        .attr("transform", d => `translate(${x(d.x0)}, ${chartHeight})`)
 
     //need to populate the bin containers with data the first time
     binContainerEnter.selectAll("circle")
@@ -134,7 +134,7 @@ d3.json(dataFile, function(error, allData) {
           return (d.length==0) ? 0 : d.radius; })
 
     binContainerEnter.merge(binContainer)
-        .attr("transform", d => `translate(${x(d.x0)}, ${height})`)
+        .attr("transform", d => `translate(${x(d.x0)}, ${chartHeight})`)
 
     //enter/update/exit for circles, inside each container
     let dots = binContainer.selectAll("circle")
