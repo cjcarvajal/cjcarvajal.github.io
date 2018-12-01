@@ -56,10 +56,8 @@ var selection = "All";
 const t = d3.transition()
       .duration(1000);
 
-//const dataFile = "cjcarvajal.github.io/cuestion-publica/data/ddr.json"
-//const dataImg = "cjcarvajal.github.io/cuestion-publica/data/congressimages.json"
-const dataFile = "ddr.json"
-const dataImg = "congressimages.json"
+const dataFile = "cjcarvajal.github.io/cuestion-publica/data/ddr.json"
+const dataImg = "cjcarvajal.github.io/cuestion-publica/data/congressimages.json"
 //number of bins for histogram
 const nbins = 14;
 
