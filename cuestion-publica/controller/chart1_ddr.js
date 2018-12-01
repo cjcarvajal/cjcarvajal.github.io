@@ -186,7 +186,7 @@ function tooltipOn(d) {
   let translateValue = gParent.attr("transform")
 
   let gX = translateValue.split(",")[0].split("(")[1]
-  let gY = height + (+d3.select(this).attr("cy")-50)
+  let gY = chartHeight + (+d3.select(this).attr("cy")-50)
 
   d3.select(this)
     .classed("selected", true)

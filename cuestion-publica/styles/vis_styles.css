@@ -24,12 +24,10 @@
 
 div.tooltip_ddr {
   color: black;
-  position: absolute;
   text-align: left;
   width: auto;
   height: auto;
   padding: 5px;
-  font-family: 'Montserrat', sans-serif;  
   font: 12px;
   background: #FCB8C3FF;
   border: 0px;
@@ -48,12 +46,10 @@ img.photo_congressman {
 
 div.snapshot {
   color: white;
-  position: absolute;
   text-align: center;
   width: auto;
   height: auto;
   padding: 5px;
-  font-family: 'Montserrat', sans-serif;  
   font: 18px;
   background: #454647;
   border: 0px;
