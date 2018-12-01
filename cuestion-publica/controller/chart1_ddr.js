@@ -6,7 +6,7 @@
 
 
 var svgDDR = d3.select("#chartDDRs"),
-    margin = { top: 10, right: 30, bottom: 30, left: 30 },
+    margin = { top: 10, right: 30, bottom: 30, left: 60 },
     chartWidth = svgDDR.attr("width") - margin.left - margin.right,
     chartHeight = svgDDR.attr("height") - margin.top - margin.bottom,
     ddrG = svgDDR.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -26,19 +26,19 @@ const x = d3.scaleLinear()
             `translate(${margin.left}, ${margin.top})`);*/
   
 //tooltip
-const tooltip = d3.select("#chartDDRs")
+const tooltip = d3.select("#chart1")
   .append("div")
     .attr("class", "tooltip_ddr")
     .style("opacity", 0);
 
 //snapshot
-const snapshot = d3.select("#chartDDRs")
+const snapshot = d3.select("#chart1")
   .append("div")
     .attr("class", "snapshot")
     .style("opacity", 0);
 
 //select
-var goBackButton = d3.select('#chartDDRs')
+var goBackButton = d3.select('#chart1')
   .append('button')
     .text("Volver a ver todos")
     .style('visibility','hidden')
@@ -48,7 +48,7 @@ var goBackButton = d3.select('#chartDDRs')
 
 
 //title
-var title = d3.select('#chartDDRs')
+//var title = d3.select('#chartDDRs')
 
 var selection = "All";
 
@@ -56,15 +56,15 @@ var selection = "All";
 const t = d3.transition()
       .duration(1000);
 
-const dataFile = "cjcarvajal.github.io/cuestion-publica/data/ddr.json"
-const dataImg = "cjcarvajal.github.io/cuestion-publica/data/congressimages.json"
+const dataFile = "https://raw.githubusercontent.com/cjcarvajal/cjcarvajal.github.io/master/cuestion-publica/data/ddr.json"
+const dataImg = "https://raw.githubusercontent.com/cjcarvajal/cjcarvajal.github.io/master/cuestion-publica/data/congressimages.json"
 //number of bins for histogram
 const nbins = 14;
 
 
 function update(){
   // Get the data
-d3.json(dataFile, function(error, allData) {
+d3.json(dataFile).then(function(allData) {
     allData.forEach(function(d) {
         d.Name = d.Name
         d.Year = d.Year;
@@ -105,7 +105,7 @@ d3.json(dataFile, function(error, allData) {
     let binContainerEnter = binContainer.enter()
       .append("g")
         .attr("class", "gBin")
-        .attr("transform", d => `translate(${x(d.x0)}, ${height})`)
+        .attr("transform", d => `translate(${x(d.x0)}, ${chartHeight})`)
 
     //need to populate the bin containers with data the first time
     binContainerEnter.selectAll("circle")
@@ -134,7 +134,7 @@ d3.json(dataFile, function(error, allData) {
           return (d.length==0) ? 0 : d.radius; })
 
     binContainerEnter.merge(binContainer)
-        .attr("transform", d => `translate(${x(d.x0)}, ${height})`)
+        .attr("transform", d => `translate(${x(d.x0)}, ${chartHeight})`)
 
     //enter/update/exit for circles, inside each container
     let dots = binContainer.selectAll("circle")
@@ -208,7 +208,7 @@ function tooltipOff(d) {
 
 function snapshotOn(d) {
   ourName = d.name;
-  d3.json(dataImg, function(error, imgData) {
+  d3.json(dataImg).then(function(imgData){
     imgData.forEach(function(d) {
         d.Name = d.Name;
         d.img = d.img;
@@ -216,8 +216,8 @@ function snapshotOn(d) {
 
   var index = imgData.findIndex(x => x.Name==ourName);
 
-  let gX = width/2
-  let gY = height/2 - 15
+  let gX = chartWidth/2
+  let gY = chartHeight/2 - 15
 
   var str = "<img class =\"photo_congressman\"  src= "+ imgData[index].img  + " </>";
 
@@ -253,7 +253,7 @@ function backToAll(d) {
 // add x axis and title
 svgDDR.append("g")
   .attr("class", "axis axis--x")
-  .attr("transform", "translate(0," + height + ")")
+  .attr("transform", "translate(0," + chartHeight + ")")
   .call(d3.axisBottom(x).tickFormat(d3.format(".4")));;
 
 
