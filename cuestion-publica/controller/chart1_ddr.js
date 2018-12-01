@@ -26,13 +26,13 @@ const x = d3.scaleLinear()
             `translate(${margin.left}, ${margin.top})`);*/
   
 //tooltip
-const tooltip = d3.select("#bodychart1")
+const tooltip = d3.select("#chart1")
   .append("div")
     .attr("class", "tooltip_ddr")
     .style("opacity", 0);
 
 //snapshot
-const snapshot = d3.select("#bodychart1")
+const snapshot = d3.select("#chart1")
   .append("div")
     .attr("class", "snapshot")
     .style("opacity", 0);
