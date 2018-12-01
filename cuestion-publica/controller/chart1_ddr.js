@@ -38,7 +38,7 @@ const snapshot = d3.select("#chartDDRs")
     .style("opacity", 0);
 
 //select
-var goBackButton = d3.select('#chartDDRs')
+var goBackButton = d3.select('#chart1')
   .append('button')
     .text("Volver a ver todos")
     .style('visibility','hidden')
