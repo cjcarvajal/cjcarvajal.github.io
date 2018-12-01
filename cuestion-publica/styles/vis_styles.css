@@ -24,7 +24,6 @@
 
 div.tooltip_ddr {
   color: black;
-  position: relative;
   text-align: left;
   width: auto;
   height: auto;
@@ -47,7 +46,6 @@ img.photo_congressman {
 
 div.snapshot {
   color: white;
-  position: relative;
   text-align: center;
   width: auto;
   height: auto;
