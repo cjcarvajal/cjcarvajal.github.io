@@ -64,7 +64,7 @@ const nbins = 14;
 
 function update(){
   // Get the data
-d3.json(dataFile, function(error, allData) {
+d3.json(dataFile).then(function(allData) {
     allData.forEach(function(d) {
         d.Name = d.Name
         d.Year = d.Year;
@@ -208,7 +208,7 @@ function tooltipOff(d) {
 
 function snapshotOn(d) {
   ourName = d.name;
-  d3.json(dataImg, function(error, imgData) {
+  d3.json(dataImg).then(function(imgData)) {
     imgData.forEach(function(d) {
         d.Name = d.Name;
         d.img = d.img;
