@@ -1,6 +1,6 @@
 [  
     {  
-      "id":"Patimonio Liquido",
+      "id":"Promedio de riqueza",
       "values":[  
          {  
             "fecha":"2014",
@@ -17,7 +17,7 @@
       ]
    },
    {  
-      "id":"Promedio Impuesto a Cargo",
+      "id":"Promedio impuesto sin descuentos",
       "values":[  
          {  
             "fecha":"2014",
@@ -34,7 +34,7 @@
       ]
    },
    {  
-      "id":"Promedio Total Rentas",
+      "id":"Promedio de ganancias",
       "values":[  
          {  
             "fecha":"2014",
