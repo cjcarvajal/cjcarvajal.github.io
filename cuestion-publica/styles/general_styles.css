@@ -139,6 +139,19 @@ h2 {
     color: #F52749;
 }
 
+.ok_text {
+    color: #01B8AA;
+}
+
+.warning_text {
+    color: #F1F74C;
+}
+
+.danger_text {
+    /*color: #7C0058;*/
+    color: #F52749;
+}
+
 .enlarged_text {
     font-size: 25px;
     line-height: 1.4;
