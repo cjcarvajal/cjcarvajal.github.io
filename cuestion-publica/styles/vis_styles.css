@@ -23,6 +23,7 @@
 }
 
 div.tooltip_ddr {
+  position : absolute;
   color: black;
   text-align: left;
   width: auto;
@@ -45,6 +46,7 @@ img.photo_congressman {
 }
 
 div.snapshot {
+  position : absolute;
   color: white;
   text-align: center;
   width: auto;
