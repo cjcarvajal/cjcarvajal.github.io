@@ -216,8 +216,8 @@ function snapshotOn(d) {
 
   var index = imgData.findIndex(x => x.Name==ourName);
 
-  let gX = width/2
-  let gY = height/2 - 15
+  let gX = chartWidth/2
+  let gY = chartHeight/2 - 15
 
   var str = "<img class =\"photo_congressman\"  src= "+ imgData[index].img  + " </>";
 
@@ -253,7 +253,7 @@ function backToAll(d) {
 // add x axis and title
 svgDDR.append("g")
   .attr("class", "axis axis--x")
-  .attr("transform", "translate(0," + height + ")")
+  .attr("transform", "translate(0," + chartHeight + ")")
   .call(d3.axisBottom(x).tickFormat(d3.format(".4")));;
 
 
