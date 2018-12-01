@@ -208,7 +208,7 @@ function tooltipOff(d) {
 
 function snapshotOn(d) {
   ourName = d.name;
-  d3.json(dataImg).then(function(imgData)) {
+  d3.json(dataImg).then(function(imgData){
     imgData.forEach(function(d) {
         d.Name = d.Name;
         d.img = d.img;
