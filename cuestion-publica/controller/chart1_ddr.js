@@ -13,7 +13,7 @@ var svgDDR = d3.select("#chartDDRs"),
 
 //x scales
 const x = d3.scaleLinear()
-    .rangeRound([0, width])
+    .rangeRound([0, chartWidth])
     .domain([2003, 2016]);
 
 //set up svg
