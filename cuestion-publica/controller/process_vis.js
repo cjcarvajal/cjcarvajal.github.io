@@ -9,7 +9,7 @@ var svgAverage = d3.select("#principalAverage"),
     chartHeight = svgAverage.attr("height") - margin.top - margin.bottom,
     averageG = svgAverage.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var commonXScale = d3.scaleTime().range([0, chartWidth]),
+var commonXScale = d3.scaleTime().range([0, chartWidth - 20]),
     averageY = d3.scaleLinear().range([chartHeight, 0]),
     averageZ = d3.scaleOrdinal(d3.schemeCategory10),
     earnsY = d3.scaleLinear().range([chartHeight, 0]),
@@ -18,7 +18,7 @@ var commonXScale = d3.scaleTime().range([0, chartWidth]),
     congressZ = d3.scaleOrdinal(d3.schemeCategory10),
     lineConsecutiveId = 0;
 
-commonXScale.domain([new Date("2014"), new Date("2016")]);
+commonXScale.domain([new Date("2014"), new Date("2016-01-02")]);
 
 var svgCongress = d3.select("#principal"),
     congressG = svgCongress.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");

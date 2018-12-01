@@ -13,7 +13,6 @@ function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend) {
         .attr("class", "dataLine");
 
     var lineDraw = d3.line()
-        .curve(d3.curveBasis)
         .x(function(d) { return commonXScale(new Date(d.fecha)); })
         .y(function(d) { return scaleY(d.total); });
 
@@ -33,6 +32,15 @@ function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend) {
                 .style('stroke-width', '1.5px');
         });
 
+    lines.selectAll("circle")
+        .data((d, i) => (d.values.map(row => ({ ...row, i }))))
+        .enter().append("circle")
+        .attr("r", 2)
+        .attr("stroke", "#fff")
+        .attr("fill", "#")
+        .attr("cx", d => commonXScale(new Date(d.fecha)))
+        .attr("cy", d => scaleY(d.total));
+
     // gridlines in y axis function
     function make_y_gridlines() {
         return d3.axisLeft(scaleY)
@@ -50,7 +58,9 @@ function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend) {
     // add the X Axis
     chartG.append("g")
         .attr("transform", "translate(0," + chartHeight + ")")
-        .call(d3.axisBottom(commonXScale));
+        .call(d3.axisBottom(commonXScale)
+            .ticks(d3.timeYear.every(1))
+            .tickFormat(d3.timeFormat("%Y")));
 
     // add the Y Axis
     chartG.append("g")
