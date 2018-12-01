@@ -6,7 +6,7 @@
 
 
 var svgDDR = d3.select("#chartDDRs"),
-    margin = { top: 10, right: 30, bottom: 30, left: 30 },
+    margin = { top: 10, right: 30, bottom: 30, left: 60 },
     chartWidth = svgDDR.attr("width") - margin.left - margin.right,
     chartHeight = svgDDR.attr("height") - margin.top - margin.bottom,
     ddrG = svgDDR.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
