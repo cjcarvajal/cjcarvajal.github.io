@@ -4,9 +4,9 @@
 }
 
 .grid line {
-  stroke: lightgrey;
-  stroke-opacity: 0.7;
-  shape-rendering: crispEdges;
+    stroke: lightgrey;
+    stroke-opacity: 0.7;
+    shape-rendering: crispEdges;
 }
 
 .legend_container {
@@ -15,46 +15,57 @@
 }
 
 .exit {
-  fill: #F25754;
+    fill: #F25754;
 }
 
 .selected {
-  fill: #f2de15;
+    fill: #f2de15;
 }
 
 div.tooltip_ddr {
-  position : absolute;
-  color: black;
-  text-align: left;
-  width: auto;
-  height: auto;
-  padding: 5px;
-  font: 12px;
-  background: #FCB8C3FF;
-  border: 0px;
-  border-radius: 8px;
-  pointer-events: none;
+    position: absolute;
+    color: black;
+    text-align: left;
+    width: auto;
+    height: auto;
+    padding: 5px;
+    font: 12px;
+    background: #FCB8C3FF;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
 }
 
 img.photo_congressman {
-  display: circle;
-  max-width:100px;
-  max-height:100px;
-  width: auto;
-  height: auto;
-  clip-path: circle();
+    display: circle;
+    max-width: 100px;
+    max-height: 100px;
+    width: auto;
+    height: auto;
+    clip-path: circle();
 }
 
 div.snapshot {
-  position : absolute;
-  color: white;
-  text-align: center;
-  width: auto;
-  height: auto;
-  padding: 5px;
-  font: 18px;
-  background: #454647;
-  border: 0px;
-  border-radius: 8px;
-  pointer-events: none;
+    position: absolute;
+    color: white;
+    text-align: center;
+    width: auto;
+    height: auto;
+    padding: 5px;
+    font: 18px;
+    background: #454647;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+.fullwidth {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.observable_graph {
+    width: 50%;
 }
