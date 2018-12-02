@@ -137,7 +137,7 @@
                     <ol>
                         <li><span class="red_text">Patrimonio Líquido:</span> Porque representa la ganancia neta de cada persona, y es la base de cuánto va a ser la carga tributaria. Coloquialmente hablando, esta es la mejor medida de la <b>riqueza</b> de la persona, porque representa lo que tiene neto en su patrimonio.</li>
                         <li><span class="red_text">Total Rentas:</span> Es la suma de la Renta Líquida Gravable, Rentas Exentas, Total Ingreso No Constitutivo de Renta y Ganancias Ocasionales Gravables. Nos permite saber cuánto <b>ganancia</b> en plata tuvo una persona en el año, por ley no genera una carga tributaria en la declaración de renta.
-                        Coloquialmente hablando, esta es plata que le entra pero sobre esto no paga impuesto.</li>
+                            Coloquialmente hablando, esta es plata que le entra pero sobre esto no paga impuesto.</li>
                         <li><span class="red_text">Total Impuesto a Cargo:</span> Esta es la carga tributaria real de la persona, es el resultado de la suma del impuesto sobre la renta + impuesto sobre ganancias ocacionales. Representa lo que tendría que pagar la personas (sin deducciones ni beneficios). Coloquialmente hablando, esto es el <b>impuesto sin descuentos</b>.</li>
                     </ol>
                     <span class="red_text enlarged_text"><b>OK sigamos...</b></span>
@@ -312,8 +312,10 @@
                     </ol>
                     <span class="red_text">Sí lo prefiere revise las imagenes de ayuda para entender mejor la visualización</span>
                 </div>
-                <div class="graphic">
-                    <iframe width="800" height="600" src="https://app.powerbi.com/view?r=eyJrIjoiYjliNjA4N2ItODNkYS00N2M4LThlYjItOTNmNWM5NmYzNzlhIiwidCI6ImZhYmQwNDdjLWZmNDgtNDkyYS04YmJiLThmOThiOWZiOWNjYSIsImMiOjR9" frameborder="0" allowFullScreen="true"></iframe>
+                <div class="fullwidth">
+                    <div class="observable_graph" id="chart"></div>
+                    <img src="https://www.petdarling.com/articulos/wp-content/uploads/2014/06/como-quitarle-las-pulgas-a-mi-perro.jpg">
+                    <div class="observable_graph" id="chart2"></div>
                 </div>
                 <p>Algunos puntos para resaltar:</p>
                 <ol>
@@ -341,7 +343,36 @@
     <script src="controller/multiline.js"></script>
     <script src="controller/process_vis.js"></script>
     <script src="controller/chart1_ddr.js"></script>
+    <script type="module">
+        import notebook from "https://api.observablehq.com/@monicamarcelac/scatterplot-1.js?key=767471ef8692c919";
+import { Inspector, Runtime } from "https://unpkg.com/@observablehq/notebook-runtime@1.2.0?module";
+const renders = {
+    "chart": "#chart",
+};
+for (let i in renders)
+    renders[i] = document.querySelector(renders[i]);
+Runtime.load(notebook, (variable) => {
+    if (renders[variable.name])
+        return new Inspector(renders[variable.name]);
+});
     </script>
+    <script type="module">
+        import notebook from "https://api.observablehq.com/@monicamarcelac/scatterplot-2.js?key=bb927e73fcab3209";
+
+ const renders = {
+
+   "chart2": "#chart2",
+ };
+
+ import {Inspector, Runtime} from "https://unpkg.com/@observablehq/notebook-runtime@1.2.0?module";
+ for (let i in renders)
+   renders[i] = document.querySelector(renders[i]);
+
+ Runtime.load(notebook, (variable) => {
+   if (renders[variable.name])
+     return new Inspector(renders[variable.name]);
+ });
+</script>
 </body>
 
 </html>
