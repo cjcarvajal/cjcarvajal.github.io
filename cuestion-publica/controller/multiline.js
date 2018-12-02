@@ -57,7 +57,7 @@ function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend) {
 
     // add the X Axis
     chartG.append("g")
-        .attr("transform", "translate(0," + chartHeight + ")")
+        .attr("transform", "translate(0," + 300 + ")")
         .call(d3.axisBottom(commonXScale)
             .ticks(d3.timeYear.every(1))
             .tickFormat(d3.timeFormat("%Y")));
