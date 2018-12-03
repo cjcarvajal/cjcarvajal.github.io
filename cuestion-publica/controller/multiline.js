@@ -1,4 +1,7 @@
-function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend) {
+function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend, chartWidth, chartHeight) {
+
+    var commonXScale = d3.scaleTime().range([0, chartWidth - 20]);
+    commonXScale.domain([new Date("2014"), new Date("2016-01-02")]);
 
     scaleY.domain([
         d3.min(data, function(c) { return d3.min(c.values, function(d) { return d.total; }); }),
@@ -33,13 +36,20 @@ function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend) {
         });
 
     lines.selectAll("circle")
-        .data((d, i) => (d.values.map(row => ({ ...row, i }))))
+        .data(d => mapToCircles(d))
         .enter().append("circle")
-        .attr("r", 2)
+        .attr("r", 4)
         .attr("stroke", "#fff")
-        .attr("fill", "#")
+        .attr("stroke-width", "2px")
+        .attr("fill", (d) => { return colorScale(d.id) })
         .attr("cx", d => commonXScale(new Date(d.fecha)))
         .attr("cy", d => scaleY(d.total));
+
+    function mapToCircles(d, i) {
+        const mappedValues = d.values.map(row => ({ ...row }));
+        mappedValues.forEach(row => row.id = d.id);
+        return mappedValues;
+    }
 
     // gridlines in y axis function
     function make_y_gridlines() {
@@ -57,7 +67,7 @@ function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend) {
 
     // add the X Axis
     chartG.append("g")
-        .attr("transform", "translate(0," + 300 + ")")
+        .attr("transform", "translate(0," + chartHeight + ")")
         .call(d3.axisBottom(commonXScale)
             .ticks(d3.timeYear.every(1))
             .tickFormat(d3.timeFormat("%Y")));
