@@ -146,13 +146,13 @@
   });
 
     stepTextInfo[0] = "Hoy el congreso lo componen en total 279 personas.";
-    stepTextInfo[1] = "De estos, 108 pertenecen al Senado...";
-    stepTextInfo[2] = "... y 171 pertenecen a la Cámara de Representantes.";
-    stepTextInfo[3] = "Cuestión Pública le envió tutelas a 29.";
-    stepTextInfo[4] = "Pero en total solo 14 entregaron información...";
-    stepTextInfo[5] = "Y de estos solo 11 entregaron la información que se pidió.";
-    stepTextInfo[6] = "Pero solo 8 son analizables...";
-    stepTextInfo[7] = "Esto significa que a hoy falta información de 268 congresistas.";
+    stepTextInfo[1] = "De estos, 108 pertenecen al Senado, lo que representa el 39% del congreso.";
+    stepTextInfo[2] = "171 pertenecen a la Cámara de Representantes, lo que representa el 61% del congreso.";
+    stepTextInfo[3] = "Cuestión Pública le envió tutelas a 29 congresistas, es decir al 10% del congreso";
+    stepTextInfo[4] = "Pero en total solo 14 entregaron alguna información... lo que representa solo el 5% del congreso";
+    stepTextInfo[5] = "Solo 11 entregaron la información que se les pidió... estos representan el 4% del congreso";
+    stepTextInfo[6] = "Pero solo 8 entregaron información completa y coherente que se pueda usar para analizar... es decir  solo el 3% del congreso";
+    stepTextInfo[7] = "Esto significa que a hoy ,dado que no existe nada que obligue a los congresistas a entregar esta información, falta conocer, investigar y analizar la información de 268 congresistas... En otras palabras, a pesar de todo el esfuerzo que ha hecho Cuestión Publica, aún falta por investigar el 96% del congreso. Después de todo ya no parece tan mala idea lo que buscaba la consulta anticorrupción ¿No?";
 
   var textsvg = d3.select('#textinfo');
 
