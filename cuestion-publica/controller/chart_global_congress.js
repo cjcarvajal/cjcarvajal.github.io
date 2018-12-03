@@ -1,5 +1,5 @@
 
-  var width = 700, height = 700
+  var width = 600, height = 600
   var senado = 108
   var camara = 171
   var enviado = 29
@@ -185,10 +185,10 @@ var textsvg = d3.select('#textinfo');
         .append('image')
         .attr('xlink:href','https://upload.wikimedia.org/wikipedia/commons/d/d8/Person_icon_BLACK-01.svg')
         .attr('width', function(d) {
-          return 50
+          return 40
         })
         .attr('height', function(d) {
-          return 50
+          return 40
         })
         .attr('x', function(d) {
           return d.x
