@@ -351,12 +351,28 @@
                     <iframe width="800" height="600" src="https://app.powerbi.com/view?r=eyJrIjoiOTY0ZGQyYzUtMmI3ZS00M2VmLTlhNzctZGRkYjZhOWUxMTIxIiwidCI6ImZhYmQwNDdjLWZmNDgtNDkyYS04YmJiLThmOThiOWZiOWNjYSIsImMiOjR9" frameborder="0" allowFullScreen="true"></iframe>
                 </div>
         </section>
+        <section class="wrapper">
+            <div class="header">
+                <div class="full_size"><img src="./resources/purple.jpeg" class="upper_image"></div>
+                    <div class="upper_title upper_title_overlaped">
+                        <span class="title">XXXXXXXXXXXXXXXXXXXX</span>
+                    </div>
+                </div>
+                <div class="graphic" id='vis'; position:relative; width:100%>
+                        <svg id ="vis4" width = 700 height = 700></svg>
+                            <aside float:right><span id = "textinfo" class="legend_container"></span></aside><br><button class ="prev" onclick= showPrevious() float:center >Previo</button><button class ="next" onclick= showNext() float:center>Siguiente</button>
+                </div>
+
+
+                </div>
+        </section>
     </div>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.6/ScrollMagic.min.js"></script>
     <script src="controller/multiline.js"></script>
     <script src="controller/process_vis.js"></script>
     <script src="controller/chart1_ddr.js"></script>
+    <script src="controller/seccion4.js"></script>
     <script type="module">
         import notebook from "https://api.observablehq.com/@monicamarcelac/scatterplot-1.js?key=767471ef8692c919";
 import { Inspector, Runtime } from "https://unpkg.com/@observablehq/notebook-runtime@1.2.0?module";
