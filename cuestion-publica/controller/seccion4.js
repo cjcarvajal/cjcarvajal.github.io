@@ -145,21 +145,22 @@
 
   });
 
-    stepTextInfo[0] = "Hoy el congreso lo componen en total 279 personas.";
-    stepTextInfo[1] = "De estos, 108 pertenecen al Senado, lo que representa el 39% del congreso.";
-    stepTextInfo[2] = "171 pertenecen a la Cámara de Representantes, lo que representa el 61% del congreso.";
-    stepTextInfo[3] = "Cuestión Pública le envió tutelas a 29 congresistas, es decir al 10% del congreso";
-    stepTextInfo[4] = "Pero en total solo 14 entregaron alguna información... lo que representa solo el 5% del congreso";
-    stepTextInfo[5] = "Solo 11 entregaron la información que se les pidió... estos representan el 4% del congreso";
-    stepTextInfo[6] = "Pero solo 8 entregaron información completa y coherente que se pueda usar para analizar... es decir  solo el 3% del congreso";
-    stepTextInfo[7] = "Esto significa que a hoy ,dado que no existe nada que obligue a los congresistas a entregar esta información, falta conocer, investigar y analizar la información de 268 congresistas... En otras palabras, a pesar de todo el esfuerzo que ha hecho Cuestión Publica, aún falta por investigar el 96% del congreso. Después de todo ya no parece tan mala idea lo que buscaba la consulta anticorrupción ¿No?";
+    stepTextInfo[0] = "Hoy el congreso lo componen en total <span class=\"red_text\"><b>279</b></span> personas.";
+    stepTextInfo[1] = "De estos, <span class=\"red_text\"><b>108</b></span> pertenecen al Senado, lo que representa el <span class=\"red_text\"><b>39%</b></span> del congreso.";
+    stepTextInfo[2] = "<span class=\"red_text\"><b>171</b></span> pertenecen a la Cámara de Representantes, lo que representa el <span class=\"red_text\"><b>61%</b></span> del congreso.";
+    stepTextInfo[3] = "Cuestión Pública le envió tutelas a <span class=\"red_text\"><b>29</b></span> congresistas, es decir al <span class=\"red_text\"><b>10%</b></span> del congreso";
+    stepTextInfo[4] = "Pero en total solo <span class=\"red_text\"><b>14</b></span> entregaron alguna información... lo que representa solo el <span class=\"red_text\"><b>5%</b></span> del congreso";
+    stepTextInfo[5] = "Solo <span class=\"red_text\"><b>11</b></span> entregaron la información que se les pidió... estos representan el <span class=\"red_text\"><b>4%</b></span> del congreso";
+    stepTextInfo[6] = "Pero solo <span class=\"red_text\"><b>8</b></span> entregaron información completa y coherente que se pueda usar para analizar... es decir  solo el <span class=\"red_text\"><b>3%</b></span> del congreso";
+    stepTextInfo[7] = "Esto significa que a hoy ,dado que no existe nada que obligue a los congresistas a entregar esta información, falta conocer, investigar y analizar la información de <span class=\"red_text\"><b>268</b></span> congresistas... En otras palabras, a pesar de todo el esfuerzo que ha hecho Cuestión Publica, aún falta por investigar el <span class=\"red_text\"><b>96%</b></span> del congreso. <span class=\"red_text\"><b>Después de todo ya no parece tan mala idea lo que buscaba la consulta anticorrupción ¿No?</b></span>";
+
+var textsvg = d3.select('#textinfo');
 
   var textsvg = d3.select('#textinfo');
 
   text = textsvg
-  .text(stepTextInfo[0])
-  .exit();
-
+  .node()
+  .innerHTML= stepTextInfo[0];
   
 
   var svg = d3.select("#vis4");
@@ -311,7 +312,7 @@
     var text = textsvg
     .transition()
     .duration(1000)
-    .text(stepTextInfo[step]);
+    .node().innerHTML =stepTextInfo[step];
     }
 
 
