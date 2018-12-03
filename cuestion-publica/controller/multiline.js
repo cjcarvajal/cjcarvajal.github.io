@@ -1,7 +1,7 @@
 function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend, chartWidth, chartHeight) {
 
     var commonXScale = d3.scaleTime().range([0, chartWidth - 20]);
-    commonXScale.domain([new Date("2014"), new Date("2016-01-02")]);
+    commonXScale.domain([new Date("2013-11-31"), new Date("2016-01-02")]);
 
     scaleY.domain([
         d3.min(data, function(c) { return d3.min(c.values, function(d) { return d.total; }); }),
