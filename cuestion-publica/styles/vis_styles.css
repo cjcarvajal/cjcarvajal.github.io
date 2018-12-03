@@ -62,10 +62,21 @@ div.snapshot {
 .fullwidth {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
 }
 
 .observable_graph {
     width: 50%;
+}
+
+.tooltip {
+    text-align: center;
+    width: auto;
+    height: auto;
+    padding: 8px;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
 }

@@ -3,6 +3,14 @@ const retrieveData = async(dataUrl) => {
     return await (await fetch(dataUrl)).json();
 }
 
+// Define the div for the tooltip
+const div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("position", "absolute")
+    .style("opacity", 0);
+
+const formatDecimalComma = d3.format(",.2f");
+
 var lineConsecutiveId = 0;
 
 var svgAverage = d3.select("#principalAverage"),
