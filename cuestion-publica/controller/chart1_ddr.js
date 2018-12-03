@@ -40,7 +40,7 @@ const snapshot = d3.select("#chart1")
 //select
 var goBackButton = d3.select('#chart1')
   .append('button')
-    .attr('class','.myButton')
+    .attr('class','myButton')
     .text("Volver a ver todos")
     .style('visibility','hidden')
     .on('click',backToAll)
