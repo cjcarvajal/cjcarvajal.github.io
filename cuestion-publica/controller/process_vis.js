@@ -38,7 +38,7 @@ var svgLegendEarns = d3.select("#legendEarns").style("font", "10px sans-serif");
  * Average values congress
  */
 retrieveData('https://cjcarvajal.github.io/cuestion-publica/data/financial.json').then(response => {
-    drawMultiLineChart(response, averageY, averageG, averageZ, svgLegendAverage, averageChartWidth, averageChartHeight);
+    drawMultiLineChart(response, averageY, averageG, averageZ, svgLegendAverage, averageChartWidth, averageChartHeight,0);
     animatePath();
 });
 
@@ -46,6 +46,8 @@ retrieveData('https://cjcarvajal.github.io/cuestion-publica/data/financial.json'
  * Assets by congressman
  */
 retrieveData('https://cjcarvajal.github.io/cuestion-publica/data/earns.json').then(response => {
-    drawMultiLineChart(response, earnsY, earnsG, earnsZ, svgLegendEarns, earnsChartWidth, earnsChartHeight);
+    //Precalculated
+    var averageLineValue = 552820746.7;
+    drawMultiLineChart(response, earnsY, earnsG, earnsZ, svgLegendEarns, earnsChartWidth, earnsChartHeight,averageLineValue);
     animatePath();
 });
