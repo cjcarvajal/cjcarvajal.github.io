@@ -10,7 +10,7 @@ const div = d3.select("body").append("div")
     .style("opacity", 0);
 
 var averageColors = ["#01B8AA", "#F52749", "#6B134F"];
-var congressmanColor = ["#A2F06D","#AD281F",'#01B8AA','#C10185','#F9742C','#F1F74C','#6B134F','#F52749'];
+var congressmanColor = ['#F52749','#6B134F','#F1F74C','#F9742C','#C10185','#01B8AA','#AD281F','#A2F06D'];
 
 const formatDecimalComma = d3.format(",.2f");
 
