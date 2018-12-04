@@ -1,4 +1,4 @@
-function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend, chartWidth, chartHeight) {
+function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend, chartWidth, chartHeight, averageLineValue) {
 
     var commonXScale = d3.scaleUtc().range([0, chartWidth - 20]);
 
@@ -19,7 +19,7 @@ function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend, chartWi
         .attr("class", "dataLine");
 
     var lineDraw = d3.line()
-        .x(function(d) { return commonXScale(new Date(d.fecha,0)); })
+        .x(function(d) { return commonXScale(new Date(d.fecha, 0)); })
         .y(function(d) { return scaleY(d.total); });
 
     var path = lines.append("path")
@@ -54,7 +54,7 @@ function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend, chartWi
         div.transition()
             .duration(200)
             .style("opacity", .9);
-        div.html(d.id + '</br>' + '$' +formatDecimalComma(d.total))
+        div.html(d.id + '</br>' + '$' + formatDecimalComma(d.total))
             .style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY - 28) + "px");
     }
@@ -82,7 +82,7 @@ function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend, chartWi
         .attr("class", "grid")
         .call(make_y_gridlines()
             .tickSize(-chartWidth)
-            .tickFormat("")
+            .tickFormat("").tickSizeOuter(0)
         );
 
     // add the X Axis
@@ -112,6 +112,24 @@ function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend, chartWi
         .attr("y", 9.5)
         .attr("dy", "0.35em")
         .text(d => d);
+
+    if (averageLineValue > 0) {
+        chartG.append("line")
+            .style("stroke-dasharray", ("3, 3"))
+            .attr("x1", 0)
+            .attr("x2", chartWidth)
+            .attr("y1", scaleY(averageLineValue))
+            .attr("y2", scaleY(averageLineValue))
+            .attr("stroke-width", 2)
+            .attr("stroke", "black");
+
+        chartG.append("text")
+            .attr("x", chartWidth/2 - 95)
+            .attr("y", scaleY(averageLineValue) + 20)
+            .attr("dy", "0.35em")
+            .text("Promedio " + '$' + formatDecimalComma(averageLineValue));
+
+    }
 }
 
 function animatePath() {
