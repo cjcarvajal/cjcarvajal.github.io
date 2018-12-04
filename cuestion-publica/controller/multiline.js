@@ -1,7 +1,13 @@
-function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend) {
+function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend, chartWidth, chartHeight) {
 
+    var commonXScale = d3.scaleTime().range([0, chartWidth - 20]);
+
+    // This dates are before and after the real data to avoid overlaping the lines with the axis
+    commonXScale.domain([new Date("2013-11-31"), new Date("2016-01-02")]);
+
+    // The subtracted value
     scaleY.domain([
-        d3.min(data, function(c) { return d3.min(c.values, function(d) { return d.total; }); }),
+        d3.min(data, function(c) { return d3.min(c.values, function(d) { return d.total - 10000000; }); }),
         d3.max(data, function(c) { return d3.max(c.values, function(d) { return d.total; }); })
     ]);
 
@@ -25,7 +31,7 @@ function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend) {
         .style("stroke", function(d) { return colorScale(d.id); })
         .on('mouseover', function(obj) {
             d3.select(this)
-                .style('stroke-width', '3.5px');
+                .style('stroke-width', '2.5px');
         })
         .on('mouseout', function(obj) {
             d3.select(this)
@@ -33,13 +39,37 @@ function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend) {
         });
 
     lines.selectAll("circle")
-        .data((d, i) => (d.values.map(row => ({ ...row, i }))))
+        .data(d => mapToCircles(d))
         .enter().append("circle")
-        .attr("r", 2)
+        .attr("r", 4)
         .attr("stroke", "#fff")
-        .attr("fill", "#")
+        .attr("stroke-width", "2px")
+        .attr("fill", (d) => { return colorScale(d.id) })
         .attr("cx", d => commonXScale(new Date(d.fecha)))
-        .attr("cy", d => scaleY(d.total));
+        .attr("cy", d => scaleY(d.total))
+        .on('mouseover', d => drawTooltip(d))
+        .on('mouseout', hideTooltip);
+
+    function drawTooltip(d) {
+        div.transition()
+            .duration(200)
+            .style("opacity", .9);
+        div.html(d.id + '</br>' + '$' +formatDecimalComma(d.total))
+            .style("left", (d3.event.pageX) + "px")
+            .style("top", (d3.event.pageY - 28) + "px");
+    }
+
+    function hideTooltip() {
+        div.transition()
+            .duration(500)
+            .style("opacity", 0);
+    }
+
+    function mapToCircles(d, i) {
+        const mappedValues = d.values.map(row => ({ ...row }));
+        mappedValues.forEach(row => row.id = d.id);
+        return mappedValues;
+    }
 
     // gridlines in y axis function
     function make_y_gridlines() {
@@ -57,7 +87,7 @@ function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend) {
 
     // add the X Axis
     chartG.append("g")
-        .attr("transform", "translate(0," + 300 + ")")
+        .attr("transform", "translate(0," + chartHeight + ")")
         .call(d3.axisBottom(commonXScale)
             .ticks(d3.timeYear.every(1))
             .tickFormat(d3.timeFormat("%Y")));
@@ -95,7 +125,6 @@ function animatePath() {
             .transition()
             .duration(4000)
             .delay(0)
-            .attr("stroke-dashoffset", 0)
-            .style("stroke-width", 3)
+            .attr("stroke-dashoffset", 0);
     }
 }

@@ -13,7 +13,7 @@ var svgDDR = d3.select("#chartDDRs"),
 
 //x scales
 const x = d3.scaleLinear()
-    .rangeRound([0, chartWidth])
+    .rangeRound([margin.left, chartWidth])
     .domain([2003, 2016]);
 
 //set up svg
@@ -40,6 +40,7 @@ const snapshot = d3.select("#chart1")
 //select
 var goBackButton = d3.select('#chart1')
   .append('button')
+    .attr('class','myButton')
     .text("Volver a ver todos")
     .style('visibility','hidden')
     .on('click',backToAll)
@@ -193,7 +194,7 @@ function tooltipOn(d) {
   tooltip.transition()
        .duration(200)
        .style("opacity", .9);
-  tooltip.html("<b>"+d.name + "</b><br/> (" + d.value + ") <br/>"+"Hace click para focus...")
+  tooltip.html("<b>"+d.name + "</b><br/> (" + d.value + ") <br/>"+"Has click para focus...")
     .style("left", gX + "px")
     .style("top", gY + "px");
 }//tooltipOn

@@ -191,3 +191,29 @@ h2 {
 .paragraph_text {
     font-size: 18px;
 }
+
+.myButton {
+	-moz-box-shadow:inset 0px 1px 0px 0px #e184f3;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #e184f3;
+	box-shadow:inset 0px 1px 0px 0px #e184f3;
+	background-color:#6b134f;
+	-moz-border-radius:32px;
+	-webkit-border-radius:32px;
+	border-radius:32px;
+	border:1px solid #6b134f;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family: 'Montserrat', sans-serif;
+	font-size:20px;
+	padding:10px 43px;
+	text-decoration:none;
+}
+.myButton:hover {
+	background-color:#990f6d;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+
