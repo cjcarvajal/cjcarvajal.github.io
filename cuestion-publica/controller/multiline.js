@@ -1,9 +1,9 @@
 function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend, chartWidth, chartHeight) {
 
-    var commonXScale = d3.scaleTime().range([0, chartWidth - 20]);
+    var commonXScale = d3.scaleUtc().range([0, chartWidth - 20]);
 
     // This dates are before and after the real data to avoid overlaping the lines with the axis
-    commonXScale.domain([new Date("2013-11-31"), new Date("2016-01-02")]);
+    commonXScale.domain([new Date("2013/11/31"), new Date("2016/01/02")]);
 
     // The subtracted value
     scaleY.domain([
@@ -19,7 +19,7 @@ function drawMultiLineChart(data, scaleY, chartG, colorScale, svgLegend, chartWi
         .attr("class", "dataLine");
 
     var lineDraw = d3.line()
-        .x(function(d) { return commonXScale(new Date(d.fecha)); })
+        .x(function(d) { return commonXScale(new Date(d.fecha,0)); })
         .y(function(d) { return scaleY(d.total); });
 
     var path = lines.append("path")
