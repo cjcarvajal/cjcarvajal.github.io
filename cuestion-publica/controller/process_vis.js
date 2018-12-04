@@ -1,4 +1,4 @@
-const retrieveData = async(dataUrl) => {
+const retrieveData = async (dataUrl) => {
     let data = [];
     return await (await fetch(dataUrl)).json();
 }
@@ -8,6 +8,9 @@ const div = d3.select("body").append("div")
     .attr("class", "tooltip")
     .style("position", "absolute")
     .style("opacity", 0);
+
+var averageColors = ["#01B8AA", "#F52749", "#6B134F"];
+var congressmanColor = ["#A2F06D","#AD281F",'#01B8AA','#C10185','#F9742C','#F1F74C','#6B134F','#F52749'];
 
 const formatDecimalComma = d3.format(",.2f");
 
@@ -19,14 +22,14 @@ var svgAverage = d3.select("#principalAverage"),
     averageChartHeight = svgAverage.attr("height") - margin.top - margin.bottom,
     averageG = svgAverage.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")"),
     averageY = d3.scaleLinear().range([averageChartHeight, 0]),
-    averageZ = d3.scaleOrdinal(d3.schemeCategory10);
+    averageZ = d3.scaleOrdinal().range(averageColors);
 
 var svgEarns = d3.select("#principalEarns"),
     earnsChartWidth = svgEarns.attr("width") - margin.left - margin.right,
     earnsChartHeight = svgEarns.attr("height") - margin.top - margin.bottom,
     earnsG = svgEarns.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")"),
     earnsY = d3.scaleLinear().range([earnsChartHeight, 0]),
-    earnsZ = d3.scaleOrdinal(d3.schemeCategory10);
+    earnsZ = d3.scaleOrdinal().range(congressmanColor);
 
 var svgLegendAverage = d3.select("#legendAverage").style("font", "10px sans-serif");
 var svgLegendEarns = d3.select("#legendEarns").style("font", "10px sans-serif");
