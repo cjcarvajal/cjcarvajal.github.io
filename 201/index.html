@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Scream Machine</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="keys">
+        <div data-key="65" class="key">
+        	<img src="resources/I.png">
+            <kbd>A</kbd>
+            <span>Lick 1</span>
+        </div>
+        <div data-key="83" class="key">
+        	<img src="resources/jd.png">
+            <kbd>S</kbd>
+            <span>Black bean</span>
+        </div>
+        <div data-key="68" class="key">
+        	<img src="resources/pabon.png">
+            <kbd>D</kbd>
+            <span>Risk</span>
+        </div>
+        <div data-key="70" class="key">
+        	<img src="resources/perrito.png">
+            <kbd>F</kbd>
+            <span>Perrito</span>
+        </div>
+        <div data-key="71" class="key">
+        	<img src="resources/I.png">
+            <kbd>G</kbd>
+            <span>Lick 2</span>
+        </div>
+        <div data-key="72" class="key">
+        	<img src="resources/loco.png">
+            <kbd>H</kbd>
+            <span>Loco</span>
+        </div>
+        <div data-key="74" class="key">
+        	<img src="resources/bud.png">
+            <kbd>J</kbd>
+            <span>Happy</span>
+        </div>
+    </div>
+    <audio data-key="65" src="resources/lick1.mp3"></audio>
+    <audio data-key="83" src="resources/Juan.m4a"></audio>
+    <audio data-key="68" src="resources/polipo.mp4"></audio>
+    <audio data-key="70" src="resources/perrito.m4a"></audio>
+    <audio data-key="71" src="resources/lick2.mp3"></audio>
+    <audio data-key="74" src="resources/happy_noise.m4a"></audio>
+    <script type="text/javascript">
+    window.addEventListener('keydown', function(e) {
+        const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+        const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+        if (!audio) return;
+        audio.currentTime = 0;
+        audio.play();
+        key.classList.add('playing');
+
+    });
+
+    function removeTransition(e) {
+    	if(e.propertyName !== 'transform') return;
+    	this.classList.remove('playing')
+    }
+
+    const keys = document.querySelectorAll('.key');
+    keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+    </script>
+</body>
+
+</html>
