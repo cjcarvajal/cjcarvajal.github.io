@@ -8,41 +8,47 @@
 </head>
 
 <body>
+    <img class="logo" src="resources/logo.gif">
     <div class="keys">
         <div data-key="65" class="key">
-        	<img src="resources/I.png">
+            <img src="resources/I.png">
             <kbd>A</kbd>
             <span>Lick 1</span>
         </div>
         <div data-key="83" class="key">
-        	<img src="resources/jd.png">
+            <img src="resources/jd.png">
             <kbd>S</kbd>
             <span>Black bean</span>
         </div>
         <div data-key="68" class="key">
-        	<img src="resources/pabon.png">
+            <img src="resources/pabon.png">
             <kbd>D</kbd>
             <span>Risk</span>
         </div>
         <div data-key="70" class="key">
-        	<img src="resources/perrito.png">
+            <img src="resources/perrito.png">
             <kbd>F</kbd>
             <span>Perrito</span>
         </div>
         <div data-key="71" class="key">
-        	<img src="resources/I.png">
+            <img src="resources/I.png">
             <kbd>G</kbd>
             <span>Lick 2</span>
         </div>
         <div data-key="72" class="key">
-        	<img src="resources/loco.png">
+            <img src="resources/loco.png">
             <kbd>H</kbd>
             <span>Loco</span>
         </div>
         <div data-key="74" class="key">
-        	<img src="resources/bud.png">
+            <img src="resources/bud.png">
             <kbd>J</kbd>
             <span>Happy</span>
+        </div>
+        <div data-key="75" class="key hidden">
+            <img src="resources/kiddo.png">
+            <kbd>K</kbd>
+            <span>Hi kiddo</span>
         </div>
     </div>
     <audio data-key="65" src="resources/lick1.mp3"></audio>
@@ -50,8 +56,11 @@
     <audio data-key="68" src="resources/polipo.mp4"></audio>
     <audio data-key="70" src="resources/perrito.m4a"></audio>
     <audio data-key="71" src="resources/lick2.mp3"></audio>
+    <audio data-key="72" src="resources/ets.m4a"></audio>
     <audio data-key="74" src="resources/happy_noise.m4a"></audio>
+    <audio data-key="75" src="resources/kiddo.m4a"></audio>
     <script type="text/javascript">
+    var how_many = 0;
     window.addEventListener('keydown', function(e) {
         const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
         const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
@@ -60,11 +69,20 @@
         audio.play();
         key.classList.add('playing');
 
+        if (e.keyCode === 65 || e.keyCode === 71) {
+            how_many++;
+        }
+
+        if (how_many > 2) {
+            const hidden_key = document.querySelector(`.key[data-key="75"]`);
+            hidden_key.style.display='inline';
+        }
+
     });
 
     function removeTransition(e) {
-    	if(e.propertyName !== 'transform') return;
-    	this.classList.remove('playing')
+        if (e.propertyName !== 'transform') return;
+        this.classList.remove('playing')
     }
 
     const keys = document.querySelectorAll('.key');
